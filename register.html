@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione - Artigiano Social</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../../index.html">Artigiano<span>Social</span></a>
+            </div>
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <div class="nav-links" id="navLinks"></div>
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Registrati su Artigiano Social</h2>
+            <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="cognome">Cognome</label>
+                    <input type="text" id="cognome" name="cognome" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="professione">Professione</label>
+                    <select id="professione" name="professione" required>
+                        <option value="muratore">Muratore</option>
+                        <option value="idraulico">Idraulico</option>
+                        <option value="falegname">Falegname</option>
+                        <option value="elettricista">Elettricista</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Registrati</button>
+            </form>
+            <p class="auth-links">
+                Hai già un account? <a href="login.html">Accedi</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/auth.js"></script>
+</body>
+</html>

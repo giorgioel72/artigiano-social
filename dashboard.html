@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <div class="dashboard-sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar" id="userAvatar">MR</div>
+                <h3 id="userName">Caricamento...</h3>
+                <p id="userProfession">-</p>
+                <p id="userEmail">-</p>
+                
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="worksCount">0</span>
+                        <span class="stat-label">Lavori</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="reviewsCount">0</span>
+                        <span class="stat-label">Recensioni</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="rating">0.0</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="works.html" class="menu-item">
+                    <i class="fas fa-briefcase"></i> I miei lavori
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user"></i> Profilo
+                </a>
+                <a href="suppliers.html" class="menu-item">
+                    <i class="fas fa-truck"></i> Fornitori
+                </a>
+                <a href="messages.html" class="menu-item">
+                    <i class="fas fa-comments"></i> Messaggi
+                </a>
+            </div>
+        </div>
+        
+        <div class="dashboard-main">
+            <!-- VETRINA PUBBLICITARIA IN ALTO -->
+            <div class="ad-placement ad-top" id="ad-dashboard_top"></div>
+            
+            <div class="welcome-card">
+                <h2>Benvenuto, <span id="welcomeName">Artigiano</span>!</h2>
+                <p>Questa è la tua dashboard. Qui puoi gestire i tuoi lavori e connetterti con altri professionisti.</p>
+            </div>
+            
+            <div class="quick-actions">
+                <h3>Azioni rapide</h3>
+                <div class="actions-grid">
+                    <a href="add-work.html" class="action-card">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Pubblica nuovo lavoro</span>
+                    </a>
+                    <a href="suppliers.html" class="action-card">
+                        <i class="fas fa-search"></i>
+                        <span>Cerca fornitori</span>
+                    </a>
+                    <a href="profile.html" class="action-card">
+                        <i class="fas fa-edit"></i>
+                        <span>Modifica profilo</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- RIGA CON CONTENUTO PRINCIPALE + PUBBLICITÀ LATERALE -->
+            <div class="dashboard-row">
+                <div class="main-content">
+                    <div class="recent-works">
+                        <h3>I tuoi lavori recenti</h3>
+                        <div id="userWorks" class="works-list">
+                            <!-- I lavori verranno caricati qui -->
+                        </div>
+                        <a href="works.html" class="view-all">Vedi tutti i lavori →</a>
+                    </div>
+                </div>
+                
+                <!-- VETRINA PUBBLICITARIA LATERALE -->
+                <div class="sidebar-ad" id="ad-dashboard_sidebar"></div>
+            </div>
+            
+            <!-- VETRINA PUBBLICITARIA IN BASSO -->
+            <div class="ad-placement ad-bottom" id="ad-dashboard_bottom"></div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/dashboard.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I miei lavori - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/feed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Stili aggiuntivi per garantire la visualizzazione degli avatar */
+        .author-avatar-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            background: #e67e22;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+        .work-card-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+        }
+        .author-info {
+            flex: 1;
+        }
+        .author-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .author-profession {
+            font-size: 0.85rem;
+            color: #e67e22;
+        }
+        .work-date {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .work-image {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        .work-content {
+            padding: 1rem;
+        }
+        .work-title {
+            margin: 0 0 0.5rem 0;
+            color: #2c3e50;
+        }
+        .work-category {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            background: #e67e22;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .work-description {
+            color: #666;
+            margin: 0.5rem 0;
+        }
+        .work-info {
+            display: flex;
+            gap: 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .work-info i {
+            color: #e67e22;
+            margin-right: 0.3rem;
+        }
+        .work-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        .work-stats {
+            display: flex;
+            gap: 1rem;
+        }
+        .work-stats i {
+            color: #e67e22;
+        }
+        .work-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-icon {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #666;
+        }
+        .btn-icon:hover {
+            background: #e67e22;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Cerca nei tuoi lavori...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="feed-container">
+        <div class="feed-header">
+            <h1><i class="fas fa-briefcase"></i> I miei lavori</h1>
+            <p>Tutti i lavori che hai pubblicato</p>
+            <a href="add-work.html" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-plus-circle"></i> Pubblica nuovo lavoro
+            </a>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner fa-spin"></i> Caricamento lavori...
+        </div>
+
+        <!-- Feed dei lavori -->
+        <div class="works-feed" id="worksFeed">
+            <!-- I lavori verranno inseriti qui -->
+        </div>
+
+        <!-- Nessun risultato -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-tools"></i>
+            <h3>Nessun lavoro pubblicato</h3>
+            <p>Inizia pubblicando il tuo primo lavoro!</p>
+            <a href="add-work.html" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-plus-circle"></i> Pubblica lavoro
+            </a>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/works.js"></script>
+</body>
+</html>

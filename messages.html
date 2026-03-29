@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaggi - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/messages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="feed.html">Feed</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="works.html">I miei lavori</a>
+                <a href="profile.html">Profilo</a>
+                <a href="messages.html" class="active">Messaggi</a>
+                <a href="#" id="logoutBtn">Logout</a>
+            </div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <!-- Sidebar conversazioni -->
+        <div class="conversations-sidebar">
+            <div class="sidebar-header">
+                <h3>Conversazioni</h3>
+                <button class="new-chat-btn" onclick="openNewChat()">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            
+            <div class="search-chat">
+                <input type="text" id="searchConversations" placeholder="Cerca conversazioni...">
+                <i class="fas fa-search"></i>
+            </div>
+            
+            <div class="conversations-list" id="conversationsList">
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Caricamento...
+                </div>
+            </div>
+        </div>
+        
+        <!-- Area chat attiva -->
+        <div class="chat-area" id="chatArea">
+            <div class="no-chat-selected" id="noChatSelected">
+                <i class="fas fa-comments"></i>
+                <h3>Seleziona una conversazione</h3>
+                <p>Scegli una conversazione dalla lista per iniziare a chattare</p>
+                <button class="btn btn-primary" onclick="openNewChat()">
+                    <i class="fas fa-plus"></i> Nuova conversazione
+                </button>
+            </div>
+            
+            <div class="chat-active" id="chatActive" style="display: none;">
+                <div class="chat-header" id="chatHeader">
+                    <div class="chat-user-info">
+                        <div class="chat-avatar" id="chatAvatar"></div>
+                        <div>
+                            <h4 id="chatUserName">Caricamento...</h4>
+                            <p id="chatUserProfession" class="chat-user-profession"></p>
+                        </div>
+                    </div>
+                    <button class="btn-icon" onclick="closeChat()" title="Chiudi">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="messages-container" id="messagesContainer">
+                    <!-- I messaggi verranno inseriti qui -->
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                    <span id="typingUser"></span> sta scrivendo...
+                </div>
+                
+                <div class="message-input-container">
+                    <form id="messageForm" class="message-form">
+                        <textarea 
+                            id="messageText" 
+                            placeholder="Scrivi un messaggio..." 
+                            rows="1"
+                            oninput="autoResize(this)"
+                            onkeydown="handleTyping(event)"
+                        ></textarea>
+                        <button type="submit" class="btn-send">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuova Chat -->
+    <div class="modal" id="newChatModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuova conversazione</h3>
+                <button class="close-modal" onclick="closeNewChatModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="search-users">
+                    <input type="text" id="searchUsers" placeholder="Cerca artigiani...">
+                </div>
+                
+                <div class="users-list" id="usersList">
+                    <!-- Lista utenti caricata dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/messages.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+</body>
+</html>

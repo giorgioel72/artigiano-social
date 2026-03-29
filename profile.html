@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il mio profilo - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Profilo -->
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="profile-card">
+                <div class="profile-avatar-large" id="profileAvatar">
+                    <img id="avatarImg" src="https://via.placeholder.com/150/2c3e50/e67e22?text=AS" alt="Avatar">
+                    <button class="btn-change-avatar" onclick="document.getElementById('avatarInput').click()">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                </div>
+                <h2 id="profileName">Caricamento...</h2>
+                <p class="profile-profession" id="profileProfession">-</p>
+                <p class="profile-location" id="profileLocation"><i class="fas fa-map-marker-alt"></i> <span>-</span></p>
+                
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="profileWorks">0</span>
+                        <span class="stat-label">Lavori</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="profileReviews">0</span>
+                        <span class="stat-label">Recensioni</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="profileRating">0.0</span>
+                        <span class="stat-label">Rating</span>
+                    </div>
+                </div>
+
+                <div class="profile-contact" id="profileContact">
+                    <p><i class="fas fa-envelope"></i> <span id="profileEmail">-</span></p>
+                    <p><i class="fas fa-phone"></i> <span id="profilePhone">-</span></p>
+                    <p><i class="fas fa-globe"></i> <span id="profileWebsite">-</span></p>
+                </div>
+
+                <!-- Pulsante pubblica lavoro (visibile solo per profilo proprio) -->
+                <a href="add-work.html" class="btn btn-primary" id="publishWorkBtn" style="margin-top: 1rem; width: 100%; display: none;">
+                    <i class="fas fa-plus-circle"></i> Pubblica nuovo lavoro
+                </a>
+            </div>
+        </div>
+
+        <div class="profile-main">
+            <div class="profile-tabs">
+                <button class="tab-btn active" onclick="showTab('info')">
+                    <i class="fas fa-info-circle"></i> Informazioni
+                </button>
+                <button class="tab-btn" onclick="showTab('edit')" id="editTabBtn">
+                    <i class="fas fa-edit"></i> Modifica profilo
+                </button>
+                <button class="tab-btn" onclick="showTab('security')" id="securityTabBtn">
+                    <i class="fas fa-shield-alt"></i> Sicurezza
+                </button>
+                <button class="tab-btn" onclick="viewUserWorks()" id="worksTabBtn">
+                    <i class="fas fa-briefcase"></i> Lavori
+                </button>
+            </div>
+
+            <!-- Tab Info -->
+            <div id="tab-info" class="tab-content active">
+                <div class="info-card">
+                    <h3>Biografia</h3>
+                    <p id="profileBio">Nessuna biografia inserita</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>Dettagli</h3>
+                    <div class="info-grid">
+                        <div><strong>Nome completo:</strong> <span id="infoFullName">-</span></div>
+                        <div><strong>Professione:</strong> <span id="infoProfession">-</span></div>
+                        <div><strong>Email:</strong> <span id="infoEmail">-</span></div>
+                        <div><strong>Telefono:</strong> <span id="infoPhone">-</span></div>
+                        <div><strong>Città:</strong> <span id="infoCity">-</span></div>
+                        <div><strong>Indirizzo:</strong> <span id="infoAddress">-</span></div>
+                        <div><strong>Sito web:</strong> <span id="infoWebsite">-</span></div>
+                        <div><strong>Membro dal:</strong> <span id="infoJoined">-</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Modifica -->
+            <div id="tab-edit" class="tab-content">
+                <div class="edit-card">
+                    <h3>Modifica profilo</h3>
+                    <div id="editError" class="alert alert-error" style="display: none;"></div>
+                    <div id="editSuccess" class="alert alert-success" style="display: none;"></div>
+                    
+                    <form id="editProfileForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input type="text" id="editNome" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Cognome</label>
+                                <input type="text" id="editCognome" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Professione</label>
+                            <select id="editProfessione">
+                                <option value="muratore">Muratore</option>
+                                <option value="idraulico">Idraulico</option>
+                                <option value="falegname">Falegname</option>
+                                <option value="elettricista">Elettricista</option>
+                                <option value="imbianchino">Imbianchino</option>
+                                <option value="piastrellista">Piastrellista</option>
+                                <option value="giardiniere">Giardiniere</option>
+                                <option value="pittore">Pittore</option>
+                                <option value="serramentista">Serramentista</option>
+                                <option value="termoidraulico">Termoidraulico</option>
+                                <option value="frigorista">Frigorista</option>
+                                <option value="fabbro">Fabbro</option>
+                                <option value="vetraio">Vetraio</option>
+                                <option value="tappezziere">Tappezziere</option>
+                                <option value="restauratore">Restauratore</option>
+                                <option value="marmista">Marmista</option>
+                                <option value="posatore di pavimenti">Posatore di pavimenti</option>
+                                <option value="cartongessista">Cartongessista</option>
+                                <option value="coibentatore">Coibentatore</option>
+                                <option value="antennista">Antennista</option>
+                                <option value="tecnico caldaie">Tecnico caldaie</option>
+                                <option value="tecnico climatizzazione">Tecnico climatizzazione</option>
+                                <option value="pulizie">Pulizie</option>
+                                <option value="traslochi">Traslochi</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Biografia</label>
+                            <textarea id="editBio" rows="4" placeholder="Parlaci di te..."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Telefono</label>
+                                <input type="tel" id="editTelefono" placeholder="+39 123 456 7890">
+                            </div>
+                            <div class="form-group">
+                                <label>Città</label>
+                                <input type="text" id="editCittà" placeholder="Roma">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Indirizzo</label>
+                            <input type="text" id="editIndirizzo" placeholder="Via Roma 123">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sito web</label>
+                            <input type="url" id="editSitoWeb" placeholder="https://www.miosito.it">
+                        </div>
+
+                        <!-- Sezione Privacy -->
+                        <div class="privacy-section">
+                            <h4><i class="fas fa-shield-alt"></i> Privacy</h4>
+                            <div class="privacy-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="showEmail"> 
+                                    <span>Mostra email pubblicamente</span>
+                                </label>
+                                <small class="privacy-note">Se non selezionato, l'email sarà visibile solo a te</small>
+                            </div>
+                            <div class="privacy-option">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="showTelefono"> 
+                                    <span>Mostra telefono pubblicamente</span>
+                                </label>
+                                <small class="privacy-note">Se non selezionato, il telefono sarà visibile solo a te</small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Salva modifiche</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab Sicurezza -->
+            <div id="tab-security" class="tab-content">
+                <div class="security-card">
+                    <h3>Cambia password</h3>
+                    <div id="passwordError" class="alert alert-error" style="display: none;"></div>
+                    <div id="passwordSuccess" class="alert alert-success" style="display: none;"></div>
+
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label>Password attuale</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nuova password</label>
+                            <input type="password" id="newPassword" minlength="6" required>
+                            <small>Minimo 6 caratteri</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Conferma nuova password</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Aggiorna password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/profile.js"></script>
+</body>
+</html>

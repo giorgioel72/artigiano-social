@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavori dell'artigiano - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/feed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="feed-container">
+        <div class="feed-header" id="pageHeader">
+            <h1><i class="fas fa-briefcase"></i> <span id="userName">Caricamento...</span></h1>
+            <p id="userProfession">Artigiano</p>
+            <a href="javascript:history.back()" class="btn btn-secondary" style="margin-top: 1rem;">
+                <i class="fas fa-arrow-left"></i> Torna indietro
+            </a>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner fa-spin"></i> Caricamento lavori...
+        </div>
+
+        <!-- Feed dei lavori -->
+        <div class="works-feed" id="worksFeed">
+            <!-- I lavori verranno inseriti qui -->
+        </div>
+
+        <!-- Nessun risultato -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-tools"></i>
+            <h3>Nessun lavoro pubblicato</h3>
+            <p>Questo artigiano non ha ancora pubblicato lavori.</p>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/user-works.js"></script>
+</body>
+</html>

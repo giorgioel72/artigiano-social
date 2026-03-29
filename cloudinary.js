@@ -1,0 +1,15 @@
+const cloudinary = require('cloudinary').v2;
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Configurazione Cloudinary con le tue credenziali
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+console.log('☁️ Cloudinary configurato con cloud_name:', process.env.CLOUDINARY_CLOUD_NAME);
+
+module.exports = cloudinary;

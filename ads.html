@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Pubblicità - Artigiano Social</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .admin-container h1 {
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .admin-container h1 i {
+            color: #e67e22;
+        }
+
+        #addAdBtn {
+            margin-bottom: 2rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s;
+        }
+
+        #addAdBtn:hover {
+            background: #d35400;
+        }
+
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .ad-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .ad-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ad-info {
+            padding: 1.5rem;
+        }
+
+        .ad-info h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .ad-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .ad-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .ad-placement {
+            background: #f0f0f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            color: #2c3e50;
+        }
+
+        .ad-status {
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .ad-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .ad-status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .ad-stats {
+            display: flex;
+            gap: 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .ad-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .ad-stats i {
+            color: #e67e22;
+        }
+
+        .ad-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .ad-actions .btn-icon {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ad-actions .btn-icon:hover {
+            background: #e67e22;
+            color: white;
+        }
+
+        .ad-actions .btn-icon.delete:hover {
+            background: #dc3545;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0;
+        }
+
+        .modal-header h3 i {
+            color: #e67e22;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group label i {
+            color: #e67e22;
+            margin-right: 0.3rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e67e22;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.3rem;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .upload-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-danger:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .image-preview-container {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .image-preview {
+            max-width: 100%;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .preview-note {
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #modalMessage {
+            margin-bottom: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: opacity 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #e67e22;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #d35400;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #e67e22;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #e67e22;
+        }
+
+        .nav-links a.active {
+            color: #e67e22;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .ads-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                width: 95%;
+            }
+            .ad-stats {
+                flex-wrap: wrap;
+            }
+            .nav-links {
+                display: none;
+            }
+            .upload-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../../index.html">Artigiano<span>Social</span></a>
+            </div>
+            <div class="nav-links" id="navLinks"></div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <h1><i class="fas fa-ad"></i> Gestione Pubblicità</h1>
+        
+        <button id="addAdBtn" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Nuova pubblicità
+        </button>
+        
+        <div id="adsList" class="ads-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Caricamento pubblicità...
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="adModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> <span id="modalTitle">Nuova pubblicità</span></h3>
+                <button class="close-modal" onclick="closeAdModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMessage"></div>
+                <div id="modalError" class="alert alert-error" style="display: none;"></div>
+                <div id="modalSuccess" class="alert alert-success" style="display: none;"></div>
+                
+                <form id="adForm">
+                    <input type="hidden" id="adId">
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-heading"></i> Titolo *</label>
+                        <input type="text" id="adTitle" required placeholder="es. Super Offerte EdilMarket">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-align-left"></i> Descrizione</label>
+                        <textarea id="adDescription" rows="2" placeholder="Breve descrizione della pubblicità..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-cloud-upload-alt"></i> Carica immagine</label>
+                        <div class="upload-buttons">
+                            <button type="button" id="uploadImageBtn" class="btn btn-secondary">
+                                <i class="fas fa-cloud-upload-alt"></i> Scegli immagine
+                            </button>
+                            <button type="button" id="deleteImageBtn" class="btn btn-danger" disabled>
+                                <i class="fas fa-trash"></i> Cancella
+                            </button>
+                        </div>
+                        <small>Clicca "Scegli immagine" per caricare un banner su Cloudinary</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-image"></i> URL immagine *</label>
+                        <input type="url" id="adImageUrl" required placeholder="https://res.cloudinary.com/...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-link"></i> Link di destinazione *</label>
+                        <input type="url" id="adLinkUrl" required placeholder="https://...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-map-pin"></i> Posizione *</label>
+                        <select id="adPlacement" required>
+                            <option value="dashboard_top">Dashboard - In alto</option>
+                            <option value="dashboard_sidebar">Dashboard - Laterale</option>
+                            <option value="dashboard_bottom">Dashboard - In basso</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-toggle-on"></i> Stato</label>
+                            <select id="adStatus">
+                                <option value="active">Attiva</option>
+                                <option value="inactive">Inattiva</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-arrow-up"></i> Priorità (0-10)</label>
+                            <input type="number" id="adPriority" min="0" max="10" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeAdModal()">
+                            <i class="fas fa-times"></i> Annulla
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="saveAdBtn">
+                            <i class="fas fa-save"></i> Salva
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/main.js"></script>
+    <script src="../../js/ads.js"></script>
+</body>
+</html>

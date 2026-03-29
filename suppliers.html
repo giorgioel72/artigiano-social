@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornitori - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/suppliers.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Cerca fornitori...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="suppliers-container">
+        <!-- Sezione Mappa -->
+        <div class="map-section">
+            <div id="map" style="height: 100%; width: 100%;"></div>
+            <div class="map-loading" id="mapLoading" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Caricamento mappa...
+            </div>
+        </div>
+
+        <!-- Sezione Lista Fornitori -->
+        <div class="suppliers-list-section">
+            <div class="list-header">
+                <h2><i class="fas fa-truck"></i> Fornitori nelle vicinanze</h2>
+                <div class="filter-group">
+                    <select id="categoryFilter">
+                        <option value="">Tutte le categorie</option>
+                        <option value="materiali edili">Materiali edili</option>
+                        <option value="idraulica">Idraulica</option>
+                        <option value="elettricità">Elettricità</option>
+                        <option value="ferramenta">Ferramenta</option>
+                        <option value="legno">Legno</option>
+                        <option value="vernici">Vernici</option>
+                        <option value="piastrelle">Piastrelle</option>
+                        <option value="bagno">Bagno</option>
+                        <option value="giardinaggio">Giardinaggio</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                    <input type="number" id="radiusInput" placeholder="Raggio (km)" value="10" min="1" max="50">
+                    <button id="filterBtn"><i class="fas fa-filter"></i> Filtra</button>
+                </div>
+                <button id="addSupplierBtn" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">
+                    <i class="fas fa-plus-circle"></i> Aggiungi nuovo fornitore
+                </button>
+            </div>
+            
+            <div class="suppliers-list" id="suppliersList">
+                <!-- I fornitori verranno caricati qui -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Caricamento fornitori...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal per nuovo fornitore -->
+    <div class="modal" id="supplierModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Nuovo fornitore</h3>
+                <button class="close-modal" onclick="closeSupplierModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalError" class="alert alert-error" style="display: none;"></div>
+                <div id="modalSuccess" class="alert alert-success" style="display: none;"></div>
+                
+                <form id="supplierForm">
+                    <div class="form-group">
+                        <label>Nome attività *</label>
+                        <input type="text" id="supplierName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Categoria *</label>
+                        <select id="supplierCategory" required>
+                            <option value="">Seleziona categoria</option>
+                            <option value="materiali edili">Materiali edili</option>
+                            <option value="idraulica">Idraulica</option>
+                            <option value="elettricità">Elettricità</option>
+                            <option value="ferramenta">Ferramenta</option>
+                            <option value="legno">Legno</option>
+                            <option value="vernici">Vernici</option>
+                            <option value="piastrelle">Piastrelle</option>
+                            <option value="bagno">Bagno</option>
+                            <option value="giardinaggio">Giardinaggio</option>
+                            <option value="altro">Altro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Indirizzo *</label>
+                        <input type="text" id="supplierVia" placeholder="Via / Piazza" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Città *</label>
+                            <input type="text" id="supplierCittà" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CAP</label>
+                            <input type="text" id="supplierCap">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <input type="tel" id="supplierPhone" placeholder="+39 123 456 7890">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="supplierEmail" placeholder="info@esempio.it">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Sito web</label>
+                        <input type="url" id="supplierWebsite" placeholder="https://www.esempio.it">
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeSupplierModal()">Annulla</button>
+                        <button type="submit" class="btn btn-primary" id="saveSupplierBtn">
+                            <i class="fas fa-save"></i> Salva fornitore
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/suppliers.js"></script>
+</body>
+</html>

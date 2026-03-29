@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/feed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Cerca per titolo, descrizione o artigiano...">
+                <button id="searchBtn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="feed-container">
+        <div class="feed-header">
+            <h1><i class="fas fa-rss"></i> Feed dei lavori</h1>
+            <p>Scopri gli ultimi lavori pubblicati dalla community di artigiani</p>
+        </div>
+
+        <!-- Filtri -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label for="categoryFilter">Filtra per categoria:</label>
+                <select id="categoryFilter">
+                    <option value="tutte">Tutte le categorie</option>
+                    <option value="muratura">Muratura</option>
+                    <option value="idraulica">Idraulica</option>
+                    <option value="falegnameria">Falegnameria</option>
+                    <option value="elettricità">Elettricità</option>
+                    <option value="imbiancatura">Imbiancatura</option>
+                    <option value="piastrelle">Piastrelle</option>
+                    <option value="giardinaggio">Giardinaggio</option>
+                    <option value="altro">Altro</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="sortFilter">Ordina per:</label>
+                <select id="sortFilter">
+                    <option value="nuovi">Più recenti</option>
+                    <option value="popolari">Più popolari</option>
+                    <option value="commentati">Più commentati</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner fa-spin"></i> Caricamento lavori...
+        </div>
+
+        <!-- Feed dei lavori -->
+        <div class="works-feed" id="worksFeed">
+            <!-- I lavori verranno inseriti qui -->
+        </div>
+
+        <!-- Nessun risultato -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>Nessun lavoro trovato</h3>
+            <p>Prova a modificare i filtri di ricerca.</p>
+        </div>
+
+        <!-- Bottone carica altri -->
+        <div class="load-more" id="loadMore" style="display: none;">
+            <button class="btn btn-secondary" onclick="loadMoreWorks()">
+                <i class="fas fa-sync-alt"></i> Carica altri lavori
+            </button>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/feed.js"></script>
+    
+</body>
+</html>

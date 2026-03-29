@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pubblica un lavoro - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/add-work.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="add-work-container">
+        <div class="add-work-card">
+            <h1><i class="fas fa-plus-circle"></i> Pubblica un nuovo lavoro</h1>
+            <p>Condividi con la community uno dei tuoi lavori. Più dettagli inserisci, più i clienti potranno apprezzare la tua professionalità!</p>
+            
+            <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+            
+            <form id="addWorkForm">
+                <div class="form-group">
+                    <label for="title">Titolo del lavoro *</label>
+                    <input type="text" id="title" name="title" required placeholder="es. Ristrutturazione bagno completo">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Categoria *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Seleziona una categoria</option>
+                            <option value="muratura">Muratura</option>
+                            <option value="idraulica">Idraulica</option>
+                            <option value="falegnameria">Falegnameria</option>
+                            <option value="elettricità">Elettricità</option>
+                            <option value="imbiancatura">Imbiancatura</option>
+                            <option value="piastrelle">Piastrelle</option>
+                            <option value="giardinaggio">Giardinaggio</option>
+                            <option value="altro">Altro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">Stato del lavoro *</label>
+                        <select id="status" name="status" required>
+                            <option value="completato">Completato</option>
+                            <option value="in corso">In corso</option>
+                            <option value="in progetto">In progetto</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="luogo">Luogo (città/indirizzo)</label>
+                    <input type="text" id="luogo" name="luogo" placeholder="es. Roma, Via Roma 123">
+                </div>
+                
+                <!-- SEZIONE UPLOAD IMMAGINI FUNZIONANTE -->
+                <div class="form-group images-section">
+                    <label><i class="fas fa-images"></i> Foto del lavoro</label>
+                    <div class="image-upload-area">
+                        <div class="image-preview-container" id="imagePreviewContainer"></div>
+                        
+                        <div class="upload-controls">
+                            <input type="file" id="imageInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" multiple style="display: none;">
+                            <!-- RIMOSSO L'ONCLICK DA QUI -->
+                            <button type="button" class="btn-upload">
+                                <i class="fas fa-cloud-upload-alt"></i> Seleziona immagini
+                            </button>
+                            <p class="upload-hint">Puoi selezionare fino a 5 immagini (max 5MB ciascuna) - Formati supportati: JPG, PNG, GIF, WebP</p>
+                            <div id="uploadProgress" class="upload-progress" style="display: none;">
+                                <div class="progress-bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="imagesJson" name="images">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Descrizione dettagliata *</label>
+                    <textarea id="description" name="description" rows="6" required placeholder="Descrivi il lavoro che hai realizzato: materiali usati, difficoltà, tempi, ecc."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+                        <i class="fas fa-times"></i> Annulla
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Pubblica lavoro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/add-work.js"></script>
+</body>
+</html>

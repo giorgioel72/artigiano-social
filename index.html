@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artigiano Social - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <!-- NavLinks VUOTO - verrà popolato da main.js -->
+            <div class="nav-links" id="navLinks"></div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Il social network per artigiani</h1>
+            <p>Condividi i tuoi lavori, scopri nuovi fornitori e connettiti con altri professionisti</p>
+            <div class="hero-buttons">
+                <a href="pages/auth/register.html" class="btn btn-primary">Registrati ora</a>
+                <a href="pages/auth/login.html" class="btn btn-secondary">Accedi</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2>Perché Artigiano Social?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-camera"></i>
+                <h3>Vetrina lavori</h3>
+                <p>Mostra i tuoi progetti con foto e descrizioni dettagliate</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-truck"></i>
+                <h3>Fornitori locali</h3>
+                <p>Trova negozi di materiali nella tua zona</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-star"></i>
+                <h3>Recensioni</h3>
+                <p>Costruisci la tua reputazione con feedback dei clienti</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-comments"></i>
+                <h3>Chat</h3>
+                <p>Comunica direttamente con clienti e fornitori</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ultimi lavori -->
+    <section class="latest-works">
+        <h2>Ultimi lavori pubblicati</h2>
+        <div class="works-grid" id="latestWorks">
+            <!-- I lavori verranno caricati qui via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Artigiano Social</h4>
+                <p>Il social network dedicato agli artigiani italiani</p>
+            </div>
+            <div class="footer-section">
+                <h4>Link utili</h4>
+                <ul>
+                    <li><a href="#">Chi siamo</a></li>
+                    <li><a href="#">Come funziona</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Termini</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Seguici</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Artigiano Social. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+ 
+    <!-- Script nell'ordine corretto -->
+    <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>

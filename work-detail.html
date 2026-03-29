@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettaglio lavoro - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/work-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+    <a href="feed.html">Feed</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="profile.html">Profilo</a>
+    <a href="#" id="logoutBtn">Logout</a>
+</div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="work-detail-container">
+        <div class="work-detail-loading" id="loading">
+            <i class="fas fa-spinner fa-spin"></i> Caricamento lavoro...
+        </div>
+        
+        <div class="work-detail-content" id="workContent" style="display: none;">
+            <!-- Intestazione con titolo e autore -->
+            <div class="work-header">
+                <div class="work-title-section">
+                    <h1 id="workTitle"></h1>
+                    <div class="work-category" id="workCategory"></div>
+                </div>
+                
+                <div class="work-author-info">
+                    <a href="profile.html?id=" id="authorLink" class="author-link">
+                        <div class="author-avatar" id="authorAvatar"></div>
+                        <div class="author-details">
+                            <span class="author-name" id="authorName"></span>
+                            <span class="author-profession" id="authorProfession"></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Galleria immagini (per ora placeholder) -->
+            <div class="work-gallery">
+                <div class="main-image" id="mainImage">
+                    <i class="fas fa-image"></i>
+                    <span>Immagine non disponibile</span>
+                </div>
+            </div>
+
+            <!-- Info lavoro -->
+            <div class="work-info-grid">
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <strong>Luogo</strong>
+                        <span id="workLuogo">-</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <div>
+                        <strong>Data</strong>
+                        <span id="workData">-</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-tag"></i>
+                    <div>
+                        <strong>Stato</strong>
+                        <span id="workStatus">-</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <i class="fas fa-heart"></i>
+                    <div>
+                        <strong>Like</strong>
+                        <span id="workLikes">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Descrizione -->
+            <div class="work-description-section">
+                <h3>Descrizione</h3>
+                <p id="workDescription" class="work-description"></p>
+            </div>
+
+            <!-- Azioni (like, modifica se autore) -->
+            <div class="work-actions-section">
+                <button class="btn-like" id="likeBtn">
+                    <i class="far fa-heart"></i>
+                    <span id="likeText">Mi piace</span>
+                </button>
+                
+                <div id="authorActions" style="display: none;">
+                    <button class="btn-edit" onclick="editWork()">
+                        <i class="fas fa-edit"></i> Modifica
+                    </button>
+                    <button class="btn-delete" onclick="deleteWork()">
+                        <i class="fas fa-trash"></i> Elimina
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sezione commenti -->
+            <div class="comments-section">
+                <h3>Commenti <span id="commentCount">(0)</span></h3>
+                
+                <!-- Form per nuovo commento -->
+                <div class="add-comment" id="addCommentSection">
+                    <div class="comment-avatar" id="commenterAvatar"></div>
+                    <form id="commentForm" class="comment-form">
+                        <textarea id="commentText" placeholder="Scrivi un commento..." rows="2" required></textarea>
+                        <button type="submit" class="btn-comment">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Lista commenti -->
+                <div id="commentsList" class="comments-list">
+                    <!-- I commenti verranno caricati qui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/work-detail.js"></script>
+   
+</body>
+</html>

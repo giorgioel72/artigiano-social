@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica lavoro - Artigiano Social</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/add-work.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">Artigiano<span>Social</span></a>
+            </div>
+            
+            <div class="nav-search">
+                <input type="text" placeholder="Cerca artigiani, lavori o fornitori...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="nav-links" id="navLinks">
+    <a href="feed.html">Feed</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="profile.html">Profilo</a>
+    <a href="#" id="logoutBtn">Logout</a>
+</div>
+            
+            <button class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto principale -->
+    <div class="add-work-container">
+        <div class="add-work-card">
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin"></i> Caricamento lavoro...
+            </div>
+            
+            <div id="workForm" style="display: none;">
+                <h1><i class="fas fa-edit"></i> Modifica lavoro</h1>
+                <p>Aggiorna i dettagli del tuo lavoro.</p>
+                
+                <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+                <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                
+                <form id="editWorkForm">
+                    <input type="hidden" id="workId">
+                    
+                    <div class="form-group">
+                        <label for="title">Titolo del lavoro *</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Categoria *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Seleziona una categoria</option>
+                                <option value="muratura">Muratura</option>
+                                <option value="idraulica">Idraulica</option>
+                                <option value="falegnameria">Falegnameria</option>
+                                <option value="elettricità">Elettricità</option>
+                                <option value="imbiancatura">Imbiancatura</option>
+                                <option value="piastrelle">Piastrelle</option>
+                                <option value="giardinaggio">Giardinaggio</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="status">Stato del lavoro *</label>
+                            <select id="status" name="status" required>
+                                <option value="completato">Completato</option>
+                                <option value="in corso">In corso</option>
+                                <option value="in progetto">In progetto</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="luogo">Luogo (città/indirizzo)</label>
+                        <input type="text" id="luogo" name="luogo" placeholder="es. Roma, Via Roma 123">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Descrizione dettagliata *</label>
+                        <textarea id="description" name="description" rows="6" required></textarea>
+                    </div>
+                    
+                    <!-- Info sul lavoro attuale -->
+                    <div class="work-info-box">
+                        <h4><i class="fas fa-info-circle"></i> Informazioni lavoro</h4>
+                        <div class="info-stats">
+                            <div>
+                                <strong>Like:</strong> <span id="workLikes">0</span>
+                            </div>
+                            <div>
+                                <strong>Commenti:</strong> <span id="workComments">0</span>
+                            </div>
+                            <div>
+                                <strong>Pubblicato il:</strong> <span id="workDate">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='work-detail.html?id=' + document.getElementById('workId').value">
+                            <i class="fas fa-times"></i> Annulla
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i> Salva modifiche
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/search.js"></script>
+    <script src="../js/edit-work.js"></script>
+    
+</body>
+</html>
