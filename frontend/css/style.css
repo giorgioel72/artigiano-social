@@ -661,3 +661,39 @@ footer {
     font-weight: bold;
     margin-right: 5px;
 }
+/* Indicatore di presenza online */
+.online-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background-color: #4cd964;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+/* Container per avatar con indicatore */
+.author-avatar-container,
+.conversation-avatar-container,
+.comment-avatar-container,
+.user-avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Avatar nella navbar */
+.nav-avatar-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.nav-avatar-container .online-indicator {
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+}
