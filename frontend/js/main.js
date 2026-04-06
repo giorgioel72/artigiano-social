@@ -1,6 +1,10 @@
 // Configurazione API
 const API_URL = 'https://artigiano-social-api.onrender.com/api';
 
+// Variabili per presenza online
+let onlineUsers = new Set();
+let presenceSocket = null;
+
 // Gestione menu mobile
 const mobileMenu = document.getElementById('mobileMenu');
 const navLinks = document.getElementById('navLinks');
@@ -11,9 +15,67 @@ if (mobileMenu) {
     });
 }
 
-// ⚠️ PRESENZA ONLINE - DISATTIVATA TEMPORANEAMENTE PER EVITARE ERRORI
-// La funzione initPresence è commentata perché richiede Socket.io client
-// Per ora, non abbiamo l'indicatore online
+// ⭐ FUNZIONE PER AGGIORNARE GLI INDICATORI ONLINE
+function updateOnlineIndicators() {
+    document.querySelectorAll('.author-avatar-container, .conversation-avatar-container, .comment-avatar-container, .user-avatar-container').forEach(container => {
+        const userId = container.dataset.userId;
+        let indicator = container.querySelector('.online-indicator');
+        
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.className = 'online-indicator';
+            container.appendChild(indicator);
+        }
+        
+        if (userId && onlineUsers.has(userId)) {
+            indicator.style.display = 'block';
+        } else {
+            indicator.style.display = 'none';
+        }
+    });
+}
+
+// ⭐ INIZIALIZZA LA PRESENZA ONLINE
+function initPresence() {
+    const token = localStorage.getItem('token');
+    if (!token || presenceSocket) return;
+    
+    try {
+        // Socket.io client deve essere già caricato nella pagina
+        if (typeof io === 'undefined') {
+            console.warn('⚠️ Socket.io non caricato, presenza online disabilitata');
+            return;
+        }
+        
+        presenceSocket = io(API_URL.replace('/api', ''), {
+            auth: { token },
+            transports: ['websocket', 'polling']
+        });
+        
+        presenceSocket.on('user-online', ({ userId, online }) => {
+            if (online) {
+                onlineUsers.add(userId);
+            } else {
+                onlineUsers.delete(userId);
+            }
+            updateOnlineIndicators();
+        });
+        
+        // Richiedi la lista degli utenti online attuali
+        fetch(`${API_URL}/online-users`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            onlineUsers = new Set(data.onlineUsers);
+            updateOnlineIndicators();
+        })
+        .catch(err => console.error('Errore recupero utenti online:', err));
+        
+    } catch (error) {
+        console.error('❌ Errore inizializzazione presenza:', error);
+    }
+}
 
 // Aggiorna navbar in base allo stato di login
 window.updateNavbar = function() {
@@ -29,11 +91,11 @@ window.updateNavbar = function() {
     const logoLink = document.querySelector('.logo a');
     if (logoLink) {
         if (token && user) {
-            // Utente loggato -> dashboard
             logoLink.href = currentPath.includes('/pages/') ? 'dashboard.html' : 'pages/dashboard.html';
             console.log('🔗 Logo punta a dashboard');
+            // Inizializza la presenza dopo il login
+            setTimeout(() => initPresence(), 500);
         } else {
-            // Utente non loggato -> home
             logoLink.href = currentPath.includes('/pages/') ? '../index.html' : 'index.html';
             console.log('🔗 Logo punta a home');
         }
@@ -41,14 +103,11 @@ window.updateNavbar = function() {
     
     if (navLinks) {
         if (token && user) {
-            // UTENTE LOGGATO - Mostra tutti i link
             console.log('✅ Utente loggato, mostro link completi');
             
-            // Determina il percorso base
             const isInPages = currentPath.includes('/pages/');
             const basePath = isInPages ? '' : 'pages/';
             
-            // ⭐ LINK ADMIN - solo se l'utente è admin
             let adminLink = '';
             if (user.role === 'admin') {
                 adminLink = `<a href="${basePath}admin/ads.html" class="${currentPath.includes('admin/ads.html') ? 'active' : ''}">
@@ -67,25 +126,22 @@ window.updateNavbar = function() {
                 <a href="#" id="logoutBtn">Logout</a>
             `;
             
-            // Gestione logout
             const logoutBtn = document.getElementById('logoutBtn');
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
+                    if (presenceSocket) presenceSocket.disconnect();
                     window.location.href = isInPages ? '../index.html' : 'index.html';
                 });
             }
         } else {
-            // UTENTE NON LOGGATO - Mostra solo link pubblici
             console.log('❌ Utente non loggato, mostro solo link pubblici');
             
-            // Determina il percorso base
             const isInPages = currentPath.includes('/pages/');
             
             if (isInPages) {
-                // Siamo in una pagina dentro /pages/
                 navLinks.innerHTML = `
                     <a href="../index.html" class="${currentPath.endsWith('index.html') ? 'active' : ''}">Home</a>
                     <a href="feed.html" class="${currentPath.includes('feed.html') ? 'active' : ''}">Feed</a>
@@ -93,7 +149,6 @@ window.updateNavbar = function() {
                     <a href="auth/register.html" class="${currentPath.includes('register.html') ? 'active' : ''}">Registrati</a>
                 `;
             } else {
-                // Siamo nella root
                 navLinks.innerHTML = `
                     <a href="index.html" class="${currentPath.endsWith('index.html') || currentPath.endsWith('/') ? 'active' : ''}">Home</a>
                     <a href="pages/feed.html" class="${currentPath.includes('feed.html') ? 'active' : ''}">Feed</a>
@@ -163,7 +218,7 @@ function getCategoryIcon(category) {
     return icons[category] || '📸';
 }
 
-// Inizializzazione - Chiama updateNavbar IMMEDIATAMENTE
+// Inizializzazione
 (function() {
     console.log('🚀 Inizializzazione main.js');
     if (typeof window.updateNavbar === 'function') {
@@ -173,13 +228,11 @@ function getCategoryIcon(category) {
     }
 })();
 
-// DOM Content Loaded - per altre inizializzazioni
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 DOM caricato');
     loadLatestWorks();
 });
 
-// Chiudi menu mobile quando si clicca fuori
 document.addEventListener('click', (e) => {
     if (!e.target.closest('.mobile-menu') && !e.target.closest('.nav-links')) {
         const navLinks = document.getElementById('navLinks');
