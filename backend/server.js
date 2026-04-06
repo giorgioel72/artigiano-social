@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// Configurazione CORS SEMPLIFICATA (permette tutte le origini)
+// Configurazione CORS - Permette tutte le origini
 app.use(cors({
     origin: '*',
     credentials: true,
@@ -27,6 +27,7 @@ const io = socketIo(server, {
   }
 });
 
+// Middleware per gestire le richieste OPTIONS (preflight)
 app.options('*', cors());
 
 app.use(express.json());
