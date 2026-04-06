@@ -60,7 +60,7 @@ async function loadWorkDetail() {
     }
 }
 
-// Mostra le immagini
+// Mostra le immagini - VERSIONE CON ADATTAMENTO ORIZZONTALE/VERTICALE
 function displayImages(images) {
     const container = document.getElementById('mainImage');
     if (!container) {
@@ -73,10 +73,51 @@ function displayImages(images) {
         return;
     }
     
-    // Mostra la prima immagine
+    // Mostra la prima immagine con stili adattivi
     const firstImage = images[0];
-    container.innerHTML = `<img src="${firstImage}" alt="Lavoro" style="width:100%; max-height:400px; object-fit:contain;">`;
+    
+    container.innerHTML = `
+        <img src="${firstImage}" 
+             alt="Lavoro" 
+             style="width:100%; height:100%; object-fit:contain; max-height:500px;"
+             onload="this.style.opacity='1'"
+             onerror="this.src='https://via.placeholder.com/500x300?text=Immagine+non+disponibile'">
+    `;
+    
+    // Se ci sono più immagini, aggiungi una galleria di miniature
+    if (images.length > 1) {
+        // Rimuovi galleria esistente se presente
+        const existingGallery = document.querySelector('.image-gallery');
+        if (existingGallery) existingGallery.remove();
+        
+        const gallery = document.createElement('div');
+        gallery.className = 'image-gallery';
+        gallery.style.cssText = 'display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;';
+        
+        gallery.innerHTML = images.slice(1).map(img => `
+            <img src="${img}" 
+                 alt="Miniatura" 
+                 style="width:80px; height:80px; object-fit:cover; border-radius:5px; cursor:pointer; border:2px solid transparent; transition: all 0.3s;"
+                 onclick="changeMainImage('${img}')"
+                 onmouseover="this.style.borderColor='#e67e22'"
+                 onmouseout="this.style.borderColor='transparent'">
+        `).join('');
+        
+        container.parentNode.appendChild(gallery);
+    }
 }
+
+// Funzione per cambiare l'immagine principale (galleria)
+window.changeMainImage = function(imageUrl) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.innerHTML = `
+            <img src="${imageUrl}" 
+                 alt="Lavoro" 
+                 style="width:100%; height:100%; object-fit:contain; max-height:500px;">
+        `;
+    }
+};
 
 // Mostra lavoro nella UI
 function displayWork(work) {
@@ -250,14 +291,20 @@ function updateNavbar() {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     const navLinks = document.getElementById('navLinks');
+    const currentPath = window.location.pathname;
     
     if (navLinks) {
         if (token && user) {
+            const isInPages = currentPath.includes('/pages/');
+            const basePath = isInPages ? '' : 'pages/';
+            
             navLinks.innerHTML = `
-                <a href="feed.html">Feed</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="works.html">I miei lavori</a>
-                <a href="profile.html">Profilo</a>
+                <a href="${basePath}feed.html">Feed</a>
+                <a href="${basePath}dashboard.html">Dashboard</a>
+                <a href="${basePath}works.html">I miei lavori</a>
+                <a href="${basePath}profile.html">Profilo</a>
+                <a href="${basePath}messages.html">Messaggi</a>
+                <a href="${basePath}suppliers.html">Fornitori</a>
                 <a href="#" id="logoutBtn">Logout</a>
             `;
             
@@ -265,10 +312,11 @@ function updateNavbar() {
                 e.preventDefault();
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.href = '../index.html';
+                window.location.href = isInPages ? '../index.html' : 'index.html';
             });
         } else {
             navLinks.innerHTML = `
+                <a href="../index.html">Home</a>
                 <a href="feed.html">Feed</a>
                 <a href="auth/login.html">Accedi</a>
                 <a href="auth/register.html">Registrati</a>
