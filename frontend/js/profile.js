@@ -1,4 +1,4 @@
-const API_URL = 'https://artigiano-social-api.onrender.com/api';
+
 
 let currentProfileUserId = null;
 let isOwnProfile = false;
