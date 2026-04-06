@@ -98,6 +98,18 @@ function updateUIBasedOnOwnership() {
         }
     }
     
+    // Nascondi la fotocamera dell'avatar se non è il proprio profilo
+    const changeAvatarBtn = document.querySelector('.btn-change-avatar');
+    if (changeAvatarBtn) {
+        if (isOwnProfile) {
+            changeAvatarBtn.style.display = 'flex';
+            console.log('✅ Fotocamera visibile (profilo proprio)');
+        } else {
+            changeAvatarBtn.style.display = 'none';
+            console.log('🚫 Fotocamera nascosta (profilo altrui)');
+        }
+    }
+    
     // Nascondi tabs di modifica se non è proprio profilo
     const editTabBtn = document.getElementById('editTabBtn');
     const securityTabBtn = document.getElementById('securityTabBtn');
@@ -133,7 +145,7 @@ function displayProfile(user, isOwn) {
     document.getElementById('profileProfession').textContent = user.professione;
     document.getElementById('profileLocation').querySelector('span').textContent = user.città || 'Località non specificata';
     
-    // Avatar - se c'è un URL, lo usa, altrimenti iniziali
+    // Avatar
     const avatarImg = document.getElementById('avatarImg');
     if (user.avatar) {
         avatarImg.src = user.avatar;
@@ -287,7 +299,7 @@ window.viewUserWorks = function() {
     window.location.href = `user-works.html?id=${userId}`;
 };
 
-// GESTIONE UPLOAD AVATAR
+// Gestione upload avatar - SOLO PER PROFILO PROPRIO
 function setupAvatarUpload() {
     const avatarInput = document.getElementById('avatarInput');
     if (!avatarInput) return;
@@ -295,6 +307,12 @@ function setupAvatarUpload() {
     avatarInput.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
+        
+        // ⭐ CONTROLLO DI SICUREZZA: Se non è il proprio profilo, blocca
+        if (!isOwnProfile) {
+            alert('❌ Non puoi cambiare l\'avatar di un altro utente!');
+            return;
+        }
         
         // Validazione
         if (!file.type.startsWith('image/')) {
@@ -312,9 +330,15 @@ function setupAvatarUpload() {
         
         const token = localStorage.getItem('token');
         
+        // Mostra feedback
+        const avatarImg = document.getElementById('avatarImg');
+        const originalSrc = avatarImg.src;
+        avatarImg.style.opacity = '0.5';
+        
         try {
             console.log('📡 Invio avatar...');
             
+            // ⭐ IMPORTANTE: NON inviare alcun ID nell'URL!
             const response = await fetch(`${API_URL}/upload/avatar`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
@@ -330,7 +354,8 @@ function setupAvatarUpload() {
             console.log('✅ Avatar upload OK:', result);
             
             // Aggiorna l'immagine mostrata
-            document.getElementById('avatarImg').src = result.avatarUrl;
+            avatarImg.src = result.avatarUrl;
+            avatarImg.style.opacity = '1';
             
             // Aggiorna i dati utente nel localStorage
             const user = JSON.parse(localStorage.getItem('user'));
@@ -339,12 +364,18 @@ function setupAvatarUpload() {
             
             alert('✅ Avatar aggiornato con successo!');
             
+            // Forza l'aggiornamento della navbar
+            if (typeof window.updateNavbar === 'function') {
+                window.updateNavbar();
+            }
+            
         } catch (error) {
             console.error('❌ Errore upload avatar:', error);
             alert('❌ Errore upload avatar: ' + error.message);
+            avatarImg.src = originalSrc;
+            avatarImg.style.opacity = '1';
         }
         
-        // Reset input
         e.target.value = '';
     });
 }
@@ -490,15 +521,20 @@ function updateNavbar() {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     const navLinks = document.getElementById('navLinks');
+    const currentPath = window.location.pathname;
     
     if (navLinks) {
         if (token && user) {
+            const isInPages = currentPath.includes('/pages/');
+            const basePath = isInPages ? '' : 'pages/';
+            
             navLinks.innerHTML = `
-                <a href="feed.html">Feed</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="works.html">I miei lavori</a>
-                <a href="profile.html" class="active">Profilo</a>
-                <a href="messages.html">Messaggi</a>
+                <a href="${basePath}feed.html">Feed</a>
+                <a href="${basePath}dashboard.html">Dashboard</a>
+                <a href="${basePath}works.html">I miei lavori</a>
+                <a href="${basePath}profile.html" class="active">Profilo</a>
+                <a href="${basePath}messages.html">Messaggi</a>
+                <a href="${basePath}suppliers.html">Fornitori</a>
                 <a href="#" id="logoutBtn">Logout</a>
             `;
             
@@ -506,10 +542,11 @@ function updateNavbar() {
                 e.preventDefault();
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.href = '../index.html';
+                window.location.href = isInPages ? '../index.html' : 'index.html';
             });
         } else {
             navLinks.innerHTML = `
+                <a href="../index.html">Home</a>
                 <a href="feed.html">Feed</a>
                 <a href="auth/login.html">Accedi</a>
                 <a href="auth/register.html">Registrati</a>
