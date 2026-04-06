@@ -160,14 +160,13 @@
     color: #888;
 }
 
-/* IMMAGINE DEL LAVORO NEL FEED - SENZA ALTEZZA FISSA */
+/* IMMAGINE DEL LAVORO NEL FEED - INTERA (SENZA TAGLIO) */
 .work-image {
     width: 100%;
     background: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
     position: relative;
     padding: 0;
 }
@@ -179,7 +178,7 @@
     object-fit: contain;
 }
 
-/* Per immagini molto alte, limitiamo l'altezza massima */
+/* Per immagini molto alte */
 .work-image img[src*="res.cloudinary"] {
     max-height: 400px;
     width: auto;
