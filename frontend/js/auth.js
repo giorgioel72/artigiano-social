@@ -38,23 +38,19 @@ if (loginForm) {
         const errorDiv = document.getElementById('errorMessage');
         const submitBtn = document.getElementById('submitBtn');
         
-        // Disabilita bottone durante l'invio
         submitBtn.disabled = true;
         submitBtn.textContent = 'Accesso in corso...';
         errorDiv.style.display = 'none';
         
         try {
-            // Chiamata API reale al backend
             const data = await apiRequest('/auth/login', 'POST', {
                 email,
                 password
             });
             
-            // Salva token e utente
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
             
-            // Reindirizza alla dashboard
             window.location.href = '../dashboard.html';
             
         } catch (error) {
@@ -86,7 +82,6 @@ if (registerForm) {
         errorDiv.style.display = 'none';
         
         try {
-            // Chiamata API reale al backend
             const data = await apiRequest('/auth/register', 'POST', {
                 nome,
                 cognome,
@@ -133,7 +128,6 @@ function updateNavbar() {
                 <a href="#" id="logoutBtn">Logout</a>
             `;
             
-            // Riapplica evento logout
             document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('token');
@@ -149,5 +143,4 @@ function updateNavbar() {
     }
 }
 
-// Esegui update navbar quando la pagina carica
 document.addEventListener('DOMContentLoaded', updateNavbar);
