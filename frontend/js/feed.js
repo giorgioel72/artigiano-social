@@ -1,9 +1,3 @@
-
-
-let allWorks = [];
-let currentPage = 1;
-const worksPerPage = 5;
-
 // Funzione per richieste (pubblica, senza token obbligatorio)
 async function apiRequest(endpoint) {
     try {
@@ -20,6 +14,10 @@ async function apiRequest(endpoint) {
         throw error;
     }
 }
+
+let allWorks = [];
+let currentPage = 1;
+const worksPerPage = 5;
 
 // Carica tutti i lavori
 async function loadWorks() {
@@ -121,22 +119,22 @@ function createWorkCard(work) {
         ? work.description.substring(0, 150) + '...' 
         : work.description;
     
-    // ⭐ AVATAR CON INDICATORE ONLINE
+    // ⭐ AVATAR CON CONTAINER PER PUNTINO VERDE
     const authorAvatar = work.author?.avatar 
         ? `<div class="author-avatar-container" data-user-id="${work.author._id}" style="position: relative; display: inline-block; margin-right: 1rem;">
-            <img src="${work.author.avatar}" alt="Avatar" class="author-avatar-img" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+            <img src="${work.author.avatar}" alt="Avatar" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
             <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
            </div>`
         : `<div class="author-avatar-container" data-user-id="${work.author._id}" style="position: relative; display: inline-block; margin-right: 1rem;">
-            <div class="author-avatar" style="width:40px; height:40px; background:#e67e22; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:bold;">
+            <div style="width:40px; height:40px; background:#e67e22; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:bold;">
                 ${work.author?.nome?.charAt(0) || ''}${work.author?.cognome?.charAt(0) || ''}
             </div>
             <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
            </div>`;
     
     return `
-        <div class="work-card" onclick="viewWork('${work._id}')">
-            <div class="work-card-header" style="display:flex; align-items:center; padding:1rem; background:#f8f9fa;">
+        <div class="work-card" onclick="viewWork('${work._id}')" style="cursor:pointer; margin-bottom:20px; border:1px solid #eee; border-radius:8px; overflow:hidden; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+            <div class="work-card-header" style="display:flex; align-items:center; padding:1rem; background:#f8f9fa; border-bottom:1px solid #eee;">
                 ${authorAvatar}
                 <div class="author-info" style="flex:1;">
                     <a href="profile.html?id=${work.author?._id}" class="author-name" style="font-weight:bold; color:#2c3e50; text-decoration:none;" onclick="event.stopPropagation()">
