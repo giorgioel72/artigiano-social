@@ -74,53 +74,53 @@ function displayWorks(works) {
     feed.innerHTML = works.map(work => createWorkCard(work)).join('');
 }
 
-// Crea card lavoro (SENZA avatar)
+// Crea card lavoro - VERSIONE CON IMMAGINE ADATTIVA
 function createWorkCard(work) {
     const data = new Date(work.createdAt).toLocaleDateString('it-IT');
     const primaImmagine = work.images && work.images.length > 0 ? work.images[0] : null;
     const icona = getCategoryIcon(work.category);
     
     return `
-        <div class="work-card" onclick="viewWork('${work._id}')">
-            <div class="work-card-header">
-                <div class="author-avatar">
+        <div class="work-card" onclick="viewWork('${work._id}')" style="cursor:pointer; margin-bottom:20px; border:1px solid #eee; border-radius:8px; overflow:hidden; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+            <div class="work-card-header" style="display:flex; align-items:center; padding:1rem; background:#f8f9fa; border-bottom:1px solid #eee;">
+                <div class="author-avatar" style="width:40px; height:40px; background:#e67e22; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:bold; margin-right:1rem;">
                     ${work.author?.nome?.charAt(0) || ''}${work.author?.cognome?.charAt(0) || ''}
                 </div>
-                <div class="author-info">
-                    <span class="author-name">${work.author?.nome || ''} ${work.author?.cognome || ''}</span>
-                    <span class="author-profession">${work.author?.professione || ''}</span>
+                <div class="author-info" style="flex:1;">
+                    <div class="author-name" style="font-weight:bold; color:#2c3e50;">${work.author?.nome || ''} ${work.author?.cognome || ''}</div>
+                    <div class="author-profession" style="font-size:0.85rem; color:#e67e22;">${work.author?.professione || 'Artigiano'}</div>
                 </div>
-                <div class="work-date">${data}</div>
+                <div class="work-date" style="font-size:0.85rem; color:#888;">${data}</div>
             </div>
             
-            <div class="work-image">
+            <div class="work-image" style="width:100%; height:200px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                 ${primaImmagine 
-                    ? `<img src="${primaImmagine}" style="width:100%; height:100%; object-fit:cover;">` 
-                    : icona}
+                    ? `<img src="${primaImmagine}" alt="${work.title}" style="width:100%; height:100%; object-fit:cover;">` 
+                    : `<span style="font-size:3rem;">${icona}</span>`}
             </div>
             
-            <div class="work-content">
-                <h3 class="work-title">${work.title}</h3>
-                <span class="work-category">${getCategoryLabel(work.category)}</span>
-                <p class="work-description">${work.description.substring(0, 100)}...</p>
+            <div class="work-content" style="padding:1rem;">
+                <h3 class="work-title" style="margin:0 0 0.5rem 0; color:#2c3e50;">${work.title}</h3>
+                <span class="work-category" style="display:inline-block; padding:0.2rem 0.8rem; background:#e67e22; color:white; border-radius:20px; font-size:0.8rem; margin-bottom:0.5rem;">${getCategoryLabel(work.category)}</span>
+                <p class="work-description" style="color:#666; margin:0.5rem 0; line-height:1.4;">${work.description.substring(0, 100)}${work.description.length > 100 ? '...' : ''}</p>
                 
-                <div class="work-info">
-                    <span><i class="fas fa-map-marker-alt"></i> ${work.luogo || 'Luogo non specificato'}</span>
-                    <span><i class="fas fa-tag"></i> ${work.status || 'completato'}</span>
+                <div class="work-info" style="display:flex; gap:1rem; margin:0.5rem 0; font-size:0.9rem; color:#666;">
+                    <span><i class="fas fa-map-marker-alt" style="color:#e67e22; margin-right:0.3rem;"></i> ${work.luogo || 'Luogo non specificato'}</span>
+                    <span><i class="fas fa-tag" style="color:#e67e22; margin-right:0.3rem;"></i> ${work.status || 'completato'}</span>
                 </div>
             </div>
             
-            <div class="work-card-footer">
-                <div class="work-stats">
-                    <span><i class="fas fa-heart"></i> ${work.likes?.length || 0}</span>
-                    <span><i class="fas fa-comment"></i> ${work.comments?.length || 0}</span>
-                    <span><i class="fas fa-image"></i> ${work.images?.length || 0}</span>
+            <div class="work-card-footer" style="display:flex; justify-content:space-between; align-items:center; padding:1rem; background:#f8f9fa; border-top:1px solid #eee;">
+                <div class="work-stats" style="display:flex; gap:1rem;">
+                    <span><i class="fas fa-heart" style="color:#e67e22;"></i> ${work.likes?.length || 0}</span>
+                    <span><i class="fas fa-comment" style="color:#e67e22;"></i> ${work.comments?.length || 0}</span>
+                    <span><i class="fas fa-image" style="color:#e67e22;"></i> ${work.images?.length || 0}</span>
                 </div>
-                <div class="work-actions">
-                    <button class="btn-icon" onclick="event.stopPropagation(); editWork('${work._id}')" title="Modifica">
+                <div class="work-actions" style="display:flex; gap:0.5rem;">
+                    <button class="btn-icon" onclick="event.stopPropagation(); editWork('${work._id}')" title="Modifica" style="width:35px; height:35px; border:none; background:white; border-radius:5px; cursor:pointer; color:#666; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon" onclick="event.stopPropagation(); deleteWork('${work._id}')" title="Elimina">
+                    <button class="btn-icon" onclick="event.stopPropagation(); deleteWork('${work._id}')" title="Elimina" style="width:35px; height:35px; border:none; background:white; border-radius:5px; cursor:pointer; color:#666; transition:all 0.3s; display:flex; align-items:center; justify-content:center;">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -184,15 +184,20 @@ function updateNavbar() {
     const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || 'null');
     const navLinks = document.getElementById('navLinks');
+    const currentPath = window.location.pathname;
     
     if (navLinks) {
         if (token && user) {
+            const isInPages = currentPath.includes('/pages/');
+            const basePath = isInPages ? '' : 'pages/';
+            
             navLinks.innerHTML = `
-                <a href="feed.html">Feed</a>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="works.html" class="active">I miei lavori</a>
-                <a href="profile.html">Profilo</a>
-                <a href="messages.html">Messaggi</a>
+                <a href="${basePath}feed.html">Feed</a>
+                <a href="${basePath}dashboard.html">Dashboard</a>
+                <a href="${basePath}works.html" class="active">I miei lavori</a>
+                <a href="${basePath}profile.html">Profilo</a>
+                <a href="${basePath}messages.html">Messaggi</a>
+                <a href="${basePath}suppliers.html">Fornitori</a>
                 <a href="#" id="logoutBtn">Logout</a>
             `;
             
@@ -200,7 +205,7 @@ function updateNavbar() {
                 e.preventDefault();
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.href = '../index.html';
+                window.location.href = isInPages ? '../index.html' : 'index.html';
             });
         } else {
             window.location.href = 'auth/login.html';
