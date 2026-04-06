@@ -8,6 +8,10 @@ if (!workId) {
     window.location.href = 'dashboard.html';
 }
 
+// Variabili globali per il lightbox
+let currentImageIndex = 0;
+let currentImagesList = [];
+
 // Funzione per richieste autenticate
 async function apiRequest(endpoint, method = 'GET', data = null) {
     const token = localStorage.getItem('token');
@@ -60,7 +64,7 @@ async function loadWorkDetail() {
     }
 }
 
-// Mostra le immagini - VERSIONE CON ADATTAMENTO ORIZZONTALE/VERTICALE
+// Mostra le immagini con lightbox
 function displayImages(images) {
     const container = document.getElementById('mainImage');
     if (!container) {
@@ -73,20 +77,27 @@ function displayImages(images) {
         return;
     }
     
-    // Mostra la prima immagine con stili adattivi
+    // Salva la lista delle immagini per il lightbox
+    currentImagesList = images;
+    
+    // Mostra la prima immagine (come miniatura cliccabile)
     const firstImage = images[0];
     
     container.innerHTML = `
-        <img src="${firstImage}" 
-             alt="Lavoro" 
-             style="width:100%; height:100%; object-fit:contain; max-height:500px;"
-             onload="this.style.opacity='1'"
-             onerror="this.src='https://via.placeholder.com/500x300?text=Immagine+non+disponibile'">
+        <div class="image-container" style="position: relative; cursor: pointer;" onclick="openLightbox(0)">
+            <img src="${firstImage}" 
+                 alt="Lavoro" 
+                 style="width:100%; height:100%; object-fit:contain; max-height:500px;"
+                 onload="this.style.opacity='1'"
+                 onerror="this.src='https://via.placeholder.com/500x300?text=Immagine+non+disponibile'">
+            <div class="image-overlay" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px;">
+                <i class="fas fa-expand"></i> Clicca per ingrandire
+            </div>
+        </div>
     `;
     
     // Se ci sono più immagini, aggiungi una galleria di miniature
     if (images.length > 1) {
-        // Rimuovi galleria esistente se presente
         const existingGallery = document.querySelector('.image-gallery');
         if (existingGallery) existingGallery.remove();
         
@@ -94,30 +105,139 @@ function displayImages(images) {
         gallery.className = 'image-gallery';
         gallery.style.cssText = 'display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap;';
         
-        gallery.innerHTML = images.slice(1).map(img => `
+        gallery.innerHTML = images.map((img, index) => `
             <img src="${img}" 
                  alt="Miniatura" 
-                 style="width:80px; height:80px; object-fit:cover; border-radius:5px; cursor:pointer; border:2px solid transparent; transition: all 0.3s;"
-                 onclick="changeMainImage('${img}')"
+                 style="width:80px; height:80px; object-fit:cover; border-radius:5px; cursor:pointer; border:2px solid ${index === 0 ? '#e67e22' : 'transparent'}; transition: all 0.3s;"
+                 onclick="event.stopPropagation(); changeMainImage('${img}', ${index})"
                  onmouseover="this.style.borderColor='#e67e22'"
-                 onmouseout="this.style.borderColor='transparent'">
+                 onmouseout="this.style.borderColor='${index === 0 ? '#e67e22' : 'transparent'}'">
         `).join('');
         
         container.parentNode.appendChild(gallery);
     }
 }
 
-// Funzione per cambiare l'immagine principale (galleria)
-window.changeMainImage = function(imageUrl) {
+// Cambia l'immagine principale
+window.changeMainImage = function(imageUrl, index) {
     const mainImage = document.getElementById('mainImage');
     if (mainImage) {
         mainImage.innerHTML = `
-            <img src="${imageUrl}" 
-                 alt="Lavoro" 
-                 style="width:100%; height:100%; object-fit:contain; max-height:500px;">
+            <div class="image-container" style="position: relative; cursor: pointer;" onclick="openLightbox(${index})">
+                <img src="${imageUrl}" 
+                     alt="Lavoro" 
+                     style="width:100%; height:100%; object-fit:contain; max-height:500px;">
+                <div class="image-overlay" style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px;">
+                    <i class="fas fa-expand"></i> Clicca per ingrandire
+                </div>
+            </div>
         `;
+        
+        // Aggiorna il bordo delle miniature
+        document.querySelectorAll('.image-gallery img').forEach((img, i) => {
+            img.style.borderColor = i === index ? '#e67e22' : 'transparent';
+        });
     }
 };
+
+// APRI LIGHTBOX
+window.openLightbox = function(index) {
+    currentImageIndex = index;
+    
+    // Crea o riutilizza il lightbox
+    let lightbox = document.getElementById('lightbox');
+    if (!lightbox) {
+        lightbox = document.createElement('div');
+        lightbox.id = 'lightbox';
+        lightbox.className = 'lightbox';
+        lightbox.innerHTML = `
+            <span class="lightbox-close">&times;</span>
+            <span class="lightbox-prev">&#10094;</span>
+            <span class="lightbox-next">&#10095;</span>
+            <div class="lightbox-counter"></div>
+        `;
+        document.body.appendChild(lightbox);
+        
+        // Eventi
+        lightbox.querySelector('.lightbox-close').onclick = closeLightbox;
+        lightbox.querySelector('.lightbox-prev').onclick = () => changeImage(-1);
+        lightbox.querySelector('.lightbox-next').onclick = () => changeImage(1);
+        lightbox.onclick = (e) => {
+            if (e.target === lightbox) closeLightbox();
+        };
+        document.addEventListener('keydown', handleLightboxKey);
+    }
+    
+    updateLightboxImage();
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+// CHIUDI LIGHTBOX
+window.closeLightbox = function() {
+    const lightbox = document.getElementById('lightbox');
+    if (lightbox) {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+};
+
+// CAMBIA IMMAGINE NEL LIGHTBOX
+window.changeImage = function(direction) {
+    if (!currentImagesList.length) return;
+    
+    currentImageIndex += direction;
+    if (currentImageIndex < 0) currentImageIndex = currentImagesList.length - 1;
+    if (currentImageIndex >= currentImagesList.length) currentImageIndex = 0;
+    
+    updateLightboxImage();
+};
+
+// AGGIORNA L'IMMAGINE NEL LIGHTBOX
+function updateLightboxImage() {
+    const lightbox = document.getElementById('lightbox');
+    if (!lightbox) return;
+    
+    const img = currentImagesList[currentImageIndex];
+    let imgElement = lightbox.querySelector('img');
+    const counter = lightbox.querySelector('.lightbox-counter');
+    
+    if (imgElement) {
+        imgElement.src = img;
+    } else {
+        imgElement = document.createElement('img');
+        imgElement.src = img;
+        lightbox.insertBefore(imgElement, lightbox.querySelector('.lightbox-counter'));
+    }
+    
+    if (counter) {
+        counter.textContent = `${currentImageIndex + 1} / ${currentImagesList.length}`;
+    }
+    
+    // Aggiorna bordo miniatura se presente
+    const galleryImgs = document.querySelectorAll('.image-gallery img');
+    galleryImgs.forEach((thumb, i) => {
+        thumb.style.borderColor = i === currentImageIndex ? '#e67e22' : 'transparent';
+    });
+}
+
+// GESTIONE TASTI PER LIGHTBOX
+function handleLightboxKey(e) {
+    const lightbox = document.getElementById('lightbox');
+    if (!lightbox || !lightbox.classList.contains('active')) return;
+    
+    switch(e.key) {
+        case 'Escape':
+            closeLightbox();
+            break;
+        case 'ArrowLeft':
+            changeImage(-1);
+            break;
+        case 'ArrowRight':
+            changeImage(1);
+            break;
+    }
+}
 
 // Mostra lavoro nella UI
 function displayWork(work) {
@@ -180,6 +300,8 @@ function displayWork(work) {
 function displayComments(comments) {
     const commentsList = document.getElementById('commentsList');
     
+    if (!commentsList) return;
+
     if (!comments || comments.length === 0) {
         commentsList.innerHTML = '<p class="no-comments">Nessun commento. Scrivi tu il primo!</p>';
         return;
