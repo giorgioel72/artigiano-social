@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://artigiano-social-api.onrender.com/api';
 
 // Funzione per richieste autenticate
 async function apiRequest(endpoint, method = 'GET', data = null) {
