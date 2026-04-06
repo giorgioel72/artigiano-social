@@ -160,33 +160,30 @@
     color: #888;
 }
 
-/* IMMAGINE DEL LAVORO NEL FEED - VERSIONE INTERA */
+/* IMMAGINE DEL LAVORO NEL FEED - SENZA ALTEZZA FISSA */
 .work-image {
     width: 100%;
-    min-height: 200px;
-    max-height: 300px;
     background: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     position: relative;
+    padding: 0;
 }
 
 .work-image img {
     width: 100%;
     height: auto;
-    max-height: 300px;
+    display: block;
     object-fit: contain;
-    background: #f0f0f0;
 }
 
-/* Per immagini molto alte */
+/* Per immagini molto alte, limitiamo l'altezza massima */
 .work-image img[src*="res.cloudinary"] {
+    max-height: 400px;
     width: auto;
     max-width: 100%;
-    height: auto;
-    max-height: 300px;
 }
 
 /* Overlay per indicare che è cliccabile */
@@ -341,13 +338,8 @@
         width: 100%;
     }
     
-    .work-image {
-        min-height: 150px;
-        max-height: 200px;
-    }
-    
-    .work-image img {
-        max-height: 200px;
+    .work-image img[src*="res.cloudinary"] {
+        max-height: 250px;
     }
     
     .work-info {
