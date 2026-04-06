@@ -1,4 +1,5 @@
-
+// Configurazione API (se non esiste già)
+const API_URL = typeof API_URL !== 'undefined' ? API_URL : 'https://artigiano-social-api.onrender.com/api';
 
 // Gestione menu mobile
 const mobileMenu = document.getElementById('mobileMenu');
