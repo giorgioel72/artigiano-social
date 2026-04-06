@@ -1,5 +1,3 @@
-const API_URL = 'https://artigiano-social-api.onrender.com/api';
-
 // Funzione per richieste autenticate
 async function apiRequest(endpoint, method = 'GET', data = null) {
     const token = localStorage.getItem('token');
@@ -24,6 +22,59 @@ async function apiRequest(endpoint, method = 'GET', data = null) {
     }
     
     return result;
+}
+
+// Carica dati utente e lavori
+async function loadUserData() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    
+    if (!token || !user) {
+        window.location.href = 'auth/login.html';
+        return;
+    }
+    
+    try {
+        // Carica profilo utente aggiornato
+        const userData = await apiRequest('/users/me');
+        
+        // Aggiorna UI con dati utente
+        document.getElementById('userName').textContent = `${userData.nome} ${userData.cognome}`;
+        document.getElementById('userProfession').textContent = userData.professione;
+        document.getElementById('userEmail').textContent = userData.email;
+        document.getElementById('welcomeName').textContent = userData.nome;
+        
+        // ⭐ AVATAR - Se presente, mostra immagine, altrimenti iniziali
+        const avatarContainer = document.getElementById('userAvatar');
+        if (avatarContainer) {
+            if (userData.avatar) {
+                avatarContainer.innerHTML = `<img src="${userData.avatar}" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                avatarContainer.style.background = 'transparent';
+                avatarContainer.style.color = 'transparent';
+            } else {
+                avatarContainer.textContent = userData.nome.charAt(0) + userData.cognome.charAt(0);
+                avatarContainer.style.background = '#e67e22';
+                avatarContainer.style.color = 'white';
+            }
+        }
+        
+        // Aggiorna statistiche
+        document.getElementById('worksCount').textContent = userData.lavoriCount || '0';
+        document.getElementById('reviewsCount').textContent = userData.recensioniCount || '0';
+        document.getElementById('rating').textContent = userData.rating || '0.0';
+        
+        // Carica i lavori dell'utente
+        await loadUserWorks(userData._id);
+        
+        // Carica le pubblicità
+        await loadAds();
+        
+    } catch (error) {
+        console.error('Errore:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'auth/login.html';
+    }
 }
 
 // Carica pubblicità per la dashboard
@@ -65,61 +116,6 @@ window.trackAdClick = async function(adId) {
         console.error('❌ Errore tracciamento click:', error);
     }
 };
-
-// Carica dati utente e lavori
-async function loadUserData() {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    
-    if (!token || !user) {
-        window.location.href = 'auth/login.html';
-        return;
-    }
-    
-    try {
-        // Carica profilo utente aggiornato
-        const userData = await apiRequest('/users/me');
-        
-        // Aggiorna UI con dati utente
-        document.getElementById('userName').textContent = `${userData.nome} ${userData.cognome}`;
-        document.getElementById('userProfession').textContent = userData.professione;
-        document.getElementById('userEmail').textContent = userData.email;
-        document.getElementById('welcomeName').textContent = userData.nome;
-        
-        // ⭐ AVATAR - Se presente, mostra immagine, altrimenti iniziali
-        const avatarContainer = document.getElementById('userAvatar');
-        if (avatarContainer) {
-            if (userData.avatar) {
-                // Mostra immagine avatar
-                avatarContainer.innerHTML = `<img src="${userData.avatar}" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
-                avatarContainer.style.background = 'transparent';
-                avatarContainer.style.color = 'transparent';
-            } else {
-                // Mostra iniziali
-                avatarContainer.textContent = userData.nome.charAt(0) + userData.cognome.charAt(0);
-                avatarContainer.style.background = '#e67e22';
-                avatarContainer.style.color = 'white';
-            }
-        }
-        
-        // Aggiorna statistiche
-        document.getElementById('worksCount').textContent = userData.lavoriCount || '0';
-        document.getElementById('reviewsCount').textContent = userData.recensioniCount || '0';
-        document.getElementById('rating').textContent = userData.rating || '0.0';
-        
-        // Carica i lavori dell'utente
-        await loadUserWorks(userData._id);
-        
-        // ⭐ Carica le pubblicità
-        await loadAds();
-        
-    } catch (error) {
-        console.error('Errore:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = 'auth/login.html';
-    }
-}
 
 // Carica lavori dell'utente
 async function loadUserWorks(userId) {
