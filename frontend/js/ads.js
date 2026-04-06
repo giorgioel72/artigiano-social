@@ -1,4 +1,4 @@
-const API_URL = 'https://artigiano-social-api.onrender.com/api';
+
 
 // Variabili globali per il widget
 let cloudinaryWidget = null;
