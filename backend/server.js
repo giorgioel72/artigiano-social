@@ -10,27 +10,16 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// Lista delle origini consentite
+// --- CONFIGURAZIONE CORS MODIFICATA ---
 const allowedOrigins = [
     'http://127.0.0.1:5500',
     'http://localhost:5500',
-    'https://artigiano-social.vercel.app',
-    'https://artigiano-social-e1l65w2dz-giorgios-projects-06ca4116.vercel.app'
+    'https://artigiano-social.vercel.app'
 ];
 
-// Configurazione CORS per Socket.io
-const io = socketIo(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
-    credentials: true
-  }
-});
-
-// Configurazione CORS COMPLETA per Express
+// CORS per Express
 app.use(cors({
     origin: function(origin, callback) {
-        // Permetti richieste senza origin (es. da Postman o mobile)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
@@ -43,6 +32,15 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
 }));
+
+// CORS per Socket.io
+const io = socketIo(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 // Middleware per gestire le richieste OPTIONS (preflight)
 app.options('*', cors());
