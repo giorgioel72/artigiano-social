@@ -9,9 +9,19 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+
+// Lista delle origini consentite
+const allowedOrigins = [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'https://artigiano-social.vercel.app',
+    'https://artigiano-social-e1l65w2dz-giorgios-projects-06ca4116.vercel.app'
+];
+
+// Configurazione CORS per Socket.io
 const io = socketIo(server, {
   cors: {
-    origin: "http://127.0.0.1:5500",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -19,7 +29,16 @@ const io = socketIo(server, {
 
 // Configurazione CORS COMPLETA per Express
 app.use(cors({
-    origin: 'http://127.0.0.1:5500',
+    origin: function(origin, callback) {
+        // Permetti richieste senza origin (es. da Postman o mobile)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('❌ CORS bloccato per:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
@@ -42,7 +61,7 @@ const workRoutes = require('./routes/workRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const supplierRoutes = require('./routes/supplierRoutes');
-const adRoutes = require('./routes/adRoutes'); // ⭐ NUOVA ROUTE PUBBLICITÀ
+const adRoutes = require('./routes/adRoutes');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -51,7 +70,7 @@ app.use('/api/works', workRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/suppliers', supplierRoutes);
-app.use('/api/ads', adRoutes); // ⭐ AGGIUNTA ROUTE PUBBLICITÀ
+app.use('/api/ads', adRoutes);
 
 // Socket.io per chat in tempo reale
 const connectedUsers = new Map();
