@@ -55,6 +55,9 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/ads', adRoutes);
 
+// ⭐ UTENTI ONLINE
+const onlineUsers = new Map(); // userId -> socketId
+
 // Socket.io per chat in tempo reale
 const connectedUsers = new Map();
 
@@ -84,6 +87,12 @@ io.use(async (socket, next) => {
 
 io.on('connection', (socket) => {
   console.log(`🔵 Utente connesso: ${socket.user?.nome || socket.userId}`);
+  
+  // ⭐ REGISTRA L'UTENTE COME ONLINE
+  onlineUsers.set(socket.userId, socket.id);
+  
+  // ⭐ EMETTI A TUTTI GLI UTENTI CHE QUESTO UTENTE È ONLINE
+  io.emit('user-online', { userId: socket.userId, online: true });
   
   connectedUsers.set(socket.userId, socket.id);
   
@@ -160,8 +169,21 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log(`🔴 Utente disconnesso: ${socket.user?.nome || socket.userId}`);
+    
+    // ⭐ RIMUOVI L'UTENTE DALLA LISTA ONLINE
+    onlineUsers.delete(socket.userId);
+    
+    // ⭐ EMETTI A TUTTI GLI UTENTI CHE QUESTO UTENTE È OFFLINE
+    io.emit('user-online', { userId: socket.userId, online: false });
+    
     connectedUsers.delete(socket.userId);
   });
+});
+
+// ⭐ ROUTE PER OTTENERE GLI UTENTI ONLINE
+app.get('/api/online-users', (req, res) => {
+  const onlineUserIds = Array.from(onlineUsers.keys());
+  res.json({ onlineUsers: onlineUserIds });
 });
 
 app.get('/', (req, res) => {
