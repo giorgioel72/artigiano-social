@@ -1,6 +1,3 @@
-// Configurazione API (se non esiste già)
-const API_URL = typeof API_URL !== 'undefined' ? API_URL : 'https://artigiano-social-api.onrender.com/api';
-
 // Gestione menu mobile
 const mobileMenu = document.getElementById('mobileMenu');
 const navLinks = document.getElementById('navLinks');
@@ -110,7 +107,7 @@ async function loadLatestWorks() {
     if (!worksGrid) return;
     
     try {
-        const response = await fetch(`${API_URL}/works?limit=3`);
+        const response = await fetch('https://artigiano-social-api.onrender.com/api/works?limit=3');
         const works = await response.json();
         
         worksGrid.innerHTML = works.map(work => {
