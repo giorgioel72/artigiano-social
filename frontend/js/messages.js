@@ -36,7 +36,7 @@ function initSocket() {
 
     console.log('🔌 Connessione a Socket.io...');
     
-    socket = io('http://localhost:5000', {
+    socket = io(API_URL.replace('/api', ''), {
         auth: { token },
         transports: ['websocket', 'polling']
     });
@@ -102,7 +102,7 @@ async function loadConversations() {
     }
 }
 
-// Mostra conversazioni
+// Mostra conversazioni - CON INDICATORE ONLINE
 function displayConversations(conversations) {
     const list = document.getElementById('conversationsList');
     
@@ -131,24 +131,35 @@ function displayConversations(conversations) {
         
         const isActive = currentConversation?._id === conv._id;
 
+        // ⭐ AVATAR CON INDICATORE ONLINE
+        const avatarHtml = otherUser?.avatar 
+            ? `<div class="conversation-avatar-container" data-user-id="${otherUser._id}" style="position: relative; display: inline-block; margin-right: 1rem;">
+                <img src="${otherUser.avatar}" alt="Avatar" class="conversation-avatar-img" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+                <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+               </div>`
+            : `<div class="conversation-avatar-container" data-user-id="${otherUser._id}" style="position: relative; display: inline-block; margin-right: 1rem;">
+                <div class="conversation-avatar" style="width:50px; height:50px; background:#e67e22; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; font-weight:bold;">
+                    ${otherUser?.nome?.charAt(0) || ''}${otherUser?.cognome?.charAt(0) || ''}
+                </div>
+                <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+               </div>`;
+
         return `
             <div class="conversation-item ${isActive ? 'active' : ''}" 
                  onclick="selectConversation('${conv._id}', '${otherUser?.nome || ''}', '${otherUser?.cognome || ''}')">
-                <div class="conversation-avatar">
-                    ${otherUser?.nome?.charAt(0) || ''}${otherUser?.cognome?.charAt(0) || ''}
-                </div>
-                <div class="conversation-info">
-                    <div class="conversation-name">
+                ${avatarHtml}
+                <div class="conversation-info" style="flex:1;">
+                    <div class="conversation-name" style="font-weight:bold; color:#2c3e50;">
                         ${otherUser?.nome || ''} ${otherUser?.cognome || ''}
                     </div>
-                    <div class="conversation-last-message">
+                    <div class="conversation-last-message" style="font-size:0.85rem; color:#666;">
                         ${lastMessage 
                             ? (lastMessage.sender?._id === currentUser.id ? 'Tu: ' : '') + 
                               (lastMessage.text.substring(0, 30) + (lastMessage.text.length > 30 ? '...' : ''))
                             : 'Nessun messaggio'}
                     </div>
                 </div>
-                <div class="conversation-time">${time}</div>
+                <div class="conversation-time" style="font-size:0.75rem; color:#999;">${time}</div>
             </div>
         `;
     }).join('');
@@ -186,7 +197,6 @@ async function loadConversation(conversationId, otherUserName, otherUserSurname)
             throw new Error('Token non trovato');
         }
 
-        // Ottieni solo i messaggi
         const messagesResponse = await fetch(`${API_URL}/chat/messages/${conversationId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -200,7 +210,6 @@ async function loadConversation(conversationId, otherUserName, otherUserSurname)
         const data = await messagesResponse.json();
         console.log(`✅ Ricevuti ${data.messages?.length || 0} messaggi`);
 
-        // Usa i dati passati dalla selezione
         currentConversation = {
             _id: conversationId,
             participants: [
@@ -219,11 +228,24 @@ async function loadConversation(conversationId, otherUserName, otherUserSurname)
         const otherUser = currentConversation.participants?.find(p => p._id !== currentUser.id);
         
         if (otherUser) {
-            document.getElementById('chatAvatar').textContent = 
-                (otherUser.nome?.charAt(0) || '') + (otherUser.cognome?.charAt(0) || '');
-            document.getElementById('chatUserName').textContent = 
-                `${otherUser.nome || ''} ${otherUser.cognome || ''}`;
-            document.getElementById('chatUserProfession').textContent = 'Artigiano';
+            // ⭐ AVATAR NELL'HEADER DELLA CHAT CON INDICATORE
+            const chatAvatar = document.getElementById('chatAvatar');
+            if (chatAvatar) {
+                if (otherUser.avatar) {
+                    chatAvatar.innerHTML = `<div class="conversation-avatar-container" data-user-id="${otherUser._id}" style="position: relative; display: inline-block; width:40px; height:40px;">
+                        <img src="${otherUser.avatar}" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                        <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+                    </div>`;
+                } else {
+                    chatAvatar.innerHTML = `<div class="conversation-avatar-container" data-user-id="${otherUser._id}" style="position: relative; display: inline-block; width:40px; height:40px; background:#e67e22; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">
+                        ${otherUser.nome?.charAt(0) || ''}${otherUser.cognome?.charAt(0) || ''}
+                        <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+                    </div>`;
+                }
+            }
+            
+            document.getElementById('chatUserName').textContent = `${otherUser.nome || ''} ${otherUser.cognome || ''}`;
+            document.getElementById('chatUserProfession').textContent = otherUser.professione || 'Artigiano';
         }
 
         displayMessages(data.messages || []);
@@ -276,13 +298,25 @@ function createMessageHTML(message) {
         minute: '2-digit'
     });
     
+    // ⭐ AVATAR DEL MITTENTE CON INDICATORE
+    const senderAvatar = message.sender.avatar 
+        ? `<div class="message-avatar-container" data-user-id="${message.sender._id}" style="position: relative; display: inline-block; width:35px; height:35px; margin-right:0.5rem;">
+            <img src="${message.sender.avatar}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+           </div>`
+        : `<div class="message-avatar-container" data-user-id="${message.sender._id}" style="position: relative; display: inline-block; width:35px; height:35px; background:#e67e22; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; margin-right:0.5rem;">
+            ${message.sender.nome?.charAt(0) || ''}${message.sender.cognome?.charAt(0) || ''}
+            <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+           </div>`;
+    
     return `
-        <div class="message ${isOwn ? 'message-own' : 'message-other'}" id="msg-${message._id}">
-            <div class="message-content">
+        <div class="message ${isOwn ? 'message-own' : 'message-other'}" id="msg-${message._id}" style="display:flex; align-items:flex-end; margin-bottom:1rem;">
+            ${!isOwn ? senderAvatar : ''}
+            <div class="message-content" style="max-width:60%; padding:0.75rem 1rem; border-radius:15px; ${isOwn ? 'background:#e67e22; color:white; border-bottom-right-radius:5px;' : 'background:white; color:#333; border-bottom-left-radius:5px; box-shadow:0 1px 3px rgba(0,0,0,0.1);'}">
                 ${message.text}
-                <div class="message-time">
+                <div class="message-time" style="font-size:0.7rem; margin-top:0.25rem; opacity:0.7; text-align:right;">
                     ${time}
-                    ${isOwn ? `<span class="message-status">
+                    ${isOwn ? `<span class="message-status" style="margin-left:0.5rem;">
                         ${message.read ? '✓✓' : '✓'}
                     </span>` : ''}
                 </div>
@@ -335,7 +369,7 @@ function handleUserTyping(userId, userName, isTyping) {
 
 // Aggiorna stato lettura messaggi
 function updateMessagesReadStatus(messageIds) {
-    // Per ora semplice
+    // Implementazione base
 }
 
 // Invio messaggio
@@ -451,7 +485,7 @@ async function loadUsers() {
     }
 }
 
-// Mostra utenti per nuova chat
+// Mostra utenti per nuova chat - CON INDICATORE ONLINE
 function displayUsers(users) {
     const list = document.getElementById('usersList');
     
@@ -462,17 +496,27 @@ function displayUsers(users) {
         return;
     }
     
-    list.innerHTML = users.map(user => `
-        <div class="user-item" onclick="startChatWithUser('${user._id}', '${user.nome}', '${user.cognome}')">
-            <div class="user-avatar">
+    list.innerHTML = users.map(user => {
+        const avatarHtml = user.avatar 
+            ? `<div class="user-avatar-container" data-user-id="${user._id}" style="position: relative; display: inline-block; width:40px; height:40px; margin-right:1rem;">
+                <img src="${user.avatar}" class="user-avatar-img" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+               </div>`
+            : `<div class="user-avatar-container" data-user-id="${user._id}" style="position: relative; display: inline-block; width:40px; height:40px; background:#2c3e50; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:1rem;">
                 ${user.nome?.charAt(0) || ''}${user.cognome?.charAt(0) || ''}
+                <div class="online-indicator" style="display: none; position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; background-color: #4cd964; border-radius: 50%; border: 2px solid white;"></div>
+               </div>`;
+        
+        return `
+            <div class="user-item" onclick="startChatWithUser('${user._id}', '${user.nome}', '${user.cognome}')" style="display:flex; align-items:center; padding:1rem; border-radius:5px; cursor:pointer;">
+                ${avatarHtml}
+                <div class="user-info">
+                    <div class="user-name" style="font-weight:bold; color:#2c3e50;">${user.nome || ''} ${user.cognome || ''}</div>
+                    <div class="user-profession" style="font-size:0.85rem; color:#e67e22;">${user.professione || 'Artigiano'}</div>
+                </div>
             </div>
-            <div class="user-info">
-                <div class="user-name">${user.nome || ''} ${user.cognome || ''}</div>
-                <div class="user-profession">${user.professione || 'Artigiano'}</div>
-            </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Inizia chat con utente
@@ -593,6 +637,7 @@ function updateNavbar() {
                 <a href="${basePath}works.html">I miei lavori</a>
                 <a href="${basePath}profile.html">Profilo</a>
                 <a href="${basePath}messages.html" class="active">Messaggi</a>
+                <a href="${basePath}suppliers.html">Fornitori</a>
                 <a href="#" id="logoutBtn">Logout</a>
             `;
             
