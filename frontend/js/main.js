@@ -1,5 +1,4 @@
-// Configurazione API
-const API_URL = 'https://artigiano-social-api.onrender.com/api';
+
 
 // Gestione menu mobile
 const mobileMenu = document.getElementById('mobileMenu');
