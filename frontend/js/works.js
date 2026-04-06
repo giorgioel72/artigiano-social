@@ -1,5 +1,3 @@
-Funzione per fare richieste API
-
 // Funzione per richieste autenticate
 async function apiRequest(endpoint, method = 'GET', data = null) {
     const token = localStorage.getItem('token');
@@ -74,7 +72,7 @@ function displayWorks(works) {
     feed.innerHTML = works.map(work => createWorkCard(work)).join('');
 }
 
-// Crea card lavoro - VERSIONE CON IMMAGINE ADATTIVA
+// Crea card lavoro
 function createWorkCard(work) {
     const data = new Date(work.createdAt).toLocaleDateString('it-IT');
     const primaImmagine = work.images && work.images.length > 0 ? work.images[0] : null;
@@ -93,9 +91,9 @@ function createWorkCard(work) {
                 <div class="work-date" style="font-size:0.85rem; color:#888;">${data}</div>
             </div>
             
-            <div class="work-image" style="width:100%; height:200px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <div class="work-image" style="width:100%; background:#f8f9fa; display:flex; align-items:center; justify-content:center; overflow:hidden;">
                 ${primaImmagine 
-                    ? `<img src="${primaImmagine}" alt="${work.title}" style="width:100%; height:100%; object-fit:cover;">` 
+                    ? `<img src="${primaImmagine}" alt="${work.title}" style="width:100%; height:auto; max-height:400px; object-fit:contain;">` 
                     : `<span style="font-size:3rem;">${icona}</span>`}
             </div>
             
