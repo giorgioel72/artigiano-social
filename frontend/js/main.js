@@ -1,3 +1,6 @@
+// Configurazione API
+const API_URL = 'https://artigiano-social-api.onrender.com/api';
+
 // Gestione menu mobile
 const mobileMenu = document.getElementById('mobileMenu');
 const navLinks = document.getElementById('navLinks');
@@ -107,7 +110,7 @@ async function loadLatestWorks() {
     if (!worksGrid) return;
     
     try {
-        const response = await fetch('http://localhost:5000/api/works?limit=3');
+        const response = await fetch(`${API_URL}/works?limit=3`);
         const works = await response.json();
         
         worksGrid.innerHTML = works.map(work => {
