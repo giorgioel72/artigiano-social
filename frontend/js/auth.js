@@ -1,5 +1,7 @@
 // Usa API_URL se esiste già, altrimenti la definisce
-const API_URL = typeof API_URL !== 'undefined' ? API_URL : 'https://artigiano-social-api.onrender.com/api';
+if (typeof API_URL === 'undefined') {
+    var API_URL = 'https://artigiano-social-api.onrender.com/api';
+}
 
 console.log('📡 auth.js - API_URL:', API_URL);
 
