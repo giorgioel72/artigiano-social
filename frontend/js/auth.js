@@ -1,5 +1,5 @@
 // Configurazione API
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://artigiano-social-api.onrender.com/api';
 
 // Funzione per fare richieste API
 async function apiRequest(endpoint, method = 'GET', data = null) {
