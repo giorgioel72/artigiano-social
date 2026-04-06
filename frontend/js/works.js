@@ -1,4 +1,4 @@
-const API_URL = 'https://artigiano-social-api.onrender.com/api';
+Funzione per fare richieste API
 
 // Funzione per richieste autenticate
 async function apiRequest(endpoint, method = 'GET', data = null) {
