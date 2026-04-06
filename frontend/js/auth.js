@@ -1,10 +1,3 @@
-// Usa API_URL se esiste già, altrimenti la definisce
-if (typeof API_URL === 'undefined') {
-    var API_URL = 'https://artigiano-social-api.onrender.com/api';
-}
-
-console.log('📡 auth.js - API_URL:', API_URL);
-
 // Funzione per fare richieste API
 async function apiRequest(endpoint, method = 'GET', data = null) {
     const options = {
