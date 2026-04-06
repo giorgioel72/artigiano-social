@@ -25,7 +25,6 @@
     font-size: 1.1rem;
 }
 
-/* Barra filtri */
 .filters-bar {
     display: flex;
     gap: 1rem;
@@ -65,7 +64,6 @@
     border-color: #e67e22;
 }
 
-/* Loading */
 .loading {
     text-align: center;
     padding: 3rem;
@@ -78,7 +76,6 @@
     margin-right: 0.5rem;
 }
 
-/* Feed dei lavori */
 .works-feed {
     display: flex;
     flex-direction: column;
@@ -86,7 +83,6 @@
     margin-bottom: 2rem;
 }
 
-/* Card lavoro */
 .work-card {
     background: white;
     border-radius: 10px;
@@ -101,7 +97,6 @@
     box-shadow: 0 5px 20px rgba(0,0,0,0.15);
 }
 
-/* Header card con autore */
 .work-card-header {
     display: flex;
     align-items: center;
@@ -178,14 +173,12 @@
     object-fit: contain;
 }
 
-/* Per immagini molto alte */
 .work-image img[src*="res.cloudinary"] {
     max-height: 400px;
     width: auto;
     max-width: 100%;
 }
 
-/* Overlay per indicare che è cliccabile */
 .work-image .image-overlay {
     position: absolute;
     bottom: 10px;
@@ -204,7 +197,6 @@
     opacity: 1;
 }
 
-/* Contenuto lavoro */
 .work-content {
     padding: 1.5rem;
 }
@@ -232,7 +224,6 @@
     margin-bottom: 1rem;
 }
 
-/* Info lavoro */
 .work-info {
     display: flex;
     gap: 1.5rem;
@@ -246,7 +237,6 @@
     margin-right: 0.3rem;
 }
 
-/* Footer card con statistiche */
 .work-card-footer {
     display: flex;
     justify-content: space-between;
@@ -288,7 +278,6 @@
     background: #d35400;
 }
 
-/* Nessun risultato */
 .no-results {
     text-align: center;
     padding: 3rem;
@@ -312,7 +301,6 @@
     color: #666;
 }
 
-/* Load more */
 .load-more {
     text-align: center;
     margin: 2rem 0;
@@ -327,7 +315,6 @@
     margin-right: 0.5rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .filters-bar {
         flex-direction: column;
