@@ -12,7 +12,7 @@ async function searchArtigiani(query) {
         console.log('🔍 Ricerca:', query);
         
         // Usa API_URL se esiste già, altrimenti usa quella di default
-        const baseUrl = typeof API_URL !== 'undefined' ? API_URL : 'http://localhost:5000/api';
+        const baseUrl = typeof API_URL !== 'undefined' ? API_URL : 'https://artigiano-social-api.onrender.com/api';
         
         // Cerca UTENTI
         const usersResponse = await fetch(`${baseUrl}/users/search/query?q=${encodeURIComponent(query)}`);
