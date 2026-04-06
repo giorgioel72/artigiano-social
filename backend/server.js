@@ -10,24 +10,9 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-// --- CONFIGURAZIONE CORS MODIFICATA ---
-const allowedOrigins = [
-    'http://127.0.0.1:5500',
-    'http://localhost:5500',
-    'https://artigiano-social.vercel.app'
-];
-
-// CORS per Express
+// Configurazione CORS SEMPLIFICATA (permette tutte le origini)
 app.use(cors({
-    origin: function(origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            console.log('❌ CORS bloccato per:', origin);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
@@ -36,13 +21,12 @@ app.use(cors({
 // CORS per Socket.io
 const io = socketIo(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true
   }
 });
 
-// Middleware per gestire le richieste OPTIONS (preflight)
 app.options('*', cors());
 
 app.use(express.json());
