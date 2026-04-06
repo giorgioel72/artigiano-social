@@ -33,39 +33,14 @@ const authMiddleware = async (req, res, next) => {
 
 // Route di test
 router.get('/test', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
   res.json({ message: '✅ Upload routes funzionanti' });
 });
 
-// ⭐ NUOVA ROUTE PER CANCELLARE IMMAGINI DA CLOUDINARY
-router.post('/destroy', authMiddleware, async (req, res) => {
-  try {
-    const { publicId } = req.body;
-    
-    if (!publicId) {
-      return res.status(400).json({ error: 'publicId richiesto' });
-    }
-
-    console.log(`🗑️ Cancellazione immagine: ${publicId}`);
-    
-    const result = await cloudinary.uploader.destroy(publicId);
-    
-    if (result.result === 'ok') {
-      console.log(`✅ Immagine cancellata: ${publicId}`);
-      res.json({ success: true, result });
-    } else {
-      console.log(`⚠️ Immagine non trovata: ${publicId}`);
-      res.json({ success: false, message: 'Immagine non trovata' });
-    }
-    
-  } catch (error) {
-    console.error('❌ Errore cancellazione:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Upload multiple immagini per lavori
+// Upload multiple immagini
 router.post('/images', authMiddleware, upload.array('images', 5), async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
+  // ⭐ HEADER CORS ESPLICITI
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
@@ -128,7 +103,8 @@ router.post('/images', authMiddleware, upload.array('images', 5), async (req, re
 
 // Upload avatar
 router.post('/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
+  // ⭐ HEADER CORS ESPLICITI
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
@@ -178,9 +154,9 @@ router.post('/avatar', authMiddleware, upload.single('avatar'), async (req, res)
   }
 });
 
-// Upload singola immagine (per usi futuri)
+// Upload singola immagine
 router.post('/image', authMiddleware, upload.single('image'), async (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
@@ -212,6 +188,36 @@ router.post('/image', authMiddleware, upload.single('image'), async (req, res) =
 
   } catch (error) {
     console.error('❌ Errore upload:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Cancella immagine da Cloudinary
+router.post('/destroy', authMiddleware, async (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  try {
+    const { publicId } = req.body;
+    
+    if (!publicId) {
+      return res.status(400).json({ error: 'publicId richiesto' });
+    }
+
+    console.log(`🗑️ Cancellazione immagine: ${publicId}`);
+    
+    const result = await cloudinary.uploader.destroy(publicId);
+    
+    if (result.result === 'ok') {
+      console.log(`✅ Immagine cancellata: ${publicId}`);
+      res.json({ success: true, result });
+    } else {
+      console.log(`⚠️ Immagine non trovata: ${publicId}`);
+      res.json({ success: false, message: 'Immagine non trovata' });
+    }
+    
+  } catch (error) {
+    console.error('❌ Errore cancellazione:', error);
     res.status(500).json({ error: error.message });
   }
 });
