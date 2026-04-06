@@ -1,4 +1,4 @@
-const API_URL = 'https://artigiano-social-api.onrender.com/api';
+
 
 // Ottieni ID dalla URL
 const urlParams = new URLSearchParams(window.location.search);
