@@ -37,9 +37,8 @@ router.get('/test', (req, res) => {
   res.json({ message: '✅ Upload routes funzionanti' });
 });
 
-// Upload multiple immagini
+// Upload multiple immagini per lavori
 router.post('/images', authMiddleware, upload.array('images', 5), async (req, res) => {
-  // ⭐ HEADER CORS ESPLICITI
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   
@@ -101,9 +100,8 @@ router.post('/images', authMiddleware, upload.array('images', 5), async (req, re
   }
 });
 
-// Upload avatar
+// ⭐ UPLOAD AVATAR - SOLO PER L'UTENTE LOGGATO
 router.post('/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
-  // ⭐ HEADER CORS ESPLICITI
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
   
@@ -112,7 +110,7 @@ router.post('/avatar', authMiddleware, upload.single('avatar'), async (req, res)
       return res.status(400).json({ error: 'Nessun file caricato' });
     }
 
-    console.log('📸 Upload avatar:', req.file.originalname);
+    console.log(`📸 Upload avatar per utente: ${req.user.nome} (ID: ${req.userId})`);
 
     const uploadPreset = 'artigiano_social';
 
@@ -126,13 +124,14 @@ router.post('/avatar', authMiddleware, upload.single('avatar'), async (req, res)
 
     fs.unlinkSync(req.file.path);
 
+    // ⭐ IMPORTANTE: Aggiorna SOLO l'utente loggato (preso dal token)
     const user = await User.findByIdAndUpdate(
       req.userId,
       { avatar: result.secure_url },
       { new: true }
     ).select('-password');
 
-    console.log('✅ Avatar aggiornato:', result.secure_url);
+    console.log(`✅ Avatar aggiornato per: ${user.nome}`);
 
     res.json({
       success: true,
@@ -154,7 +153,7 @@ router.post('/avatar', authMiddleware, upload.single('avatar'), async (req, res)
   }
 });
 
-// Upload singola immagine
+// Upload singola immagine (per usi futuri)
 router.post('/image', authMiddleware, upload.single('image'), async (req, res) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
